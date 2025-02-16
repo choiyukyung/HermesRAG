@@ -31,7 +31,7 @@ public class ArticleEntity {
     @Column(name = "section_name")
     private String sectionName;
 
-    @Column(name = "publication_date")
+    @Column(name = "web_publication_date")
     private LocalDateTime webPublicationDate;
 
     @Column(name = "title")
@@ -43,8 +43,11 @@ public class ArticleEntity {
     @Column(name = "api_url")
     private String apiUrl;
 
-    @Column(name = "is_hosted")
-    private boolean isHosted;
+    @Column(name = "trail_text", columnDefinition = "TEXT")
+    private String trailText;
+
+//    @Column(name = "is_hosted")
+//    private boolean isHosted;
 
     @Column(name = "pillar_id")
     private String pillarId;

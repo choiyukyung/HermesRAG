@@ -1,7 +1,6 @@
 package com.kayla.HermesRAG.service;
 
 import com.kayla.HermesRAG.dto.GuardianApiDTO;
-import com.kayla.HermesRAG.dto.GuardianApiResponseDTO;
 import com.kayla.HermesRAG.entity.ArticleEntity;
 import com.kayla.HermesRAG.repository.ArticleRepository;
 import jakarta.transaction.Transactional;
@@ -51,7 +50,8 @@ public class ArticleService {
                 // Guardian API 호출
                 url = guardianApiUrl + "?api-key=" + guardianApiKey
                         + "&from-date=" + weekAgoString + "&to-date=" + todayString
-                        + "&page=" + page + "&page-size=" + page_size;
+                        + "&page=" + page + "&page-size=" + page_size
+                        + "&show-fields=trailText"; // 각 기사의 요약정보
 
                 GuardianApiDTO guardianApiDTO = restTemplate.getForObject(url, GuardianApiDTO.class);
 
@@ -80,12 +80,30 @@ public class ArticleService {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No response found");
         }
 
-        GuardianApiResponseDTO responseDTO = guardianApiDTO.getResponse();
+        GuardianApiDTO.Response responseDTO = guardianApiDTO.getResponse();
         if (responseDTO.getResults().isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No articles found");
         }
 
-        return responseDTO.getResults();
+        List<ArticleEntity> articles = new ArrayList<>();
+        responseDTO.getResults().forEach(dto -> {
+            ArticleEntity article = new ArticleEntity();
+            article.setId(dto.getId());
+            article.setType(dto.getType());
+            article.setSectionId(dto.getSectionId());
+            article.setSectionName(dto.getSectionName());
+            article.setWebPublicationDate(dto.getWebPublicationDate());
+            article.setWebTitle(dto.getWebTitle());
+            article.setWebUrl(dto.getWebUrl());
+            article.setApiUrl(dto.getApiUrl());
+            article.setTrailText(dto.getFields() != null ? dto.getFields().getTrailText() : null);
+            article.setPillarId(dto.getPillarId());
+            article.setPillarName(dto.getPillarName());
+
+            articles.add(article);
+        });
+
+        return articles;
     }
 
 }
