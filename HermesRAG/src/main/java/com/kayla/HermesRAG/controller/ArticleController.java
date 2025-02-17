@@ -1,11 +1,14 @@
 package com.kayla.HermesRAG.controller;
 
+import com.kayla.HermesRAG.dto.ArticleSummaryDTO;
 import com.kayla.HermesRAG.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/article")
@@ -22,5 +25,10 @@ public class ArticleController {
     @GetMapping("/fetch")
     public HttpStatus fetchArticles() {
         return articleService.fetchWeekAndSaveArticles(); // 서비스에서 반환된 상태 코드 사용
+    }
+
+    @GetMapping("/get")
+    public List<ArticleSummaryDTO> getArticles() {
+        return articleService.getAllArticles();
     }
 }

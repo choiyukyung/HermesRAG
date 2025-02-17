@@ -34,7 +34,7 @@ public class ArticleEntity {
     @Column(name = "web_publication_date")
     private LocalDateTime webPublicationDate;
 
-    @Column(name = "title")
+    @Column(name = "web_title")
     private String webTitle;
 
     @Column(name = "web_url")

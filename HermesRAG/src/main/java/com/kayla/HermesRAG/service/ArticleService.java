@@ -1,5 +1,6 @@
 package com.kayla.HermesRAG.service;
 
+import com.kayla.HermesRAG.dto.ArticleSummaryDTO;
 import com.kayla.HermesRAG.dto.GuardianApiDTO;
 import com.kayla.HermesRAG.entity.ArticleEntity;
 import com.kayla.HermesRAG.repository.ArticleRepository;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -106,4 +108,10 @@ public class ArticleService {
         return articles;
     }
 
+    public List<ArticleSummaryDTO> getAllArticles() {
+        List<ArticleEntity> articles = articleRepository.findAll();
+        return articles.stream()
+                .map(article -> new ArticleSummaryDTO(article.getId(), article.getWebTitle(), article.getTrailText()))
+                .collect(Collectors.toList());
+    }
 }
