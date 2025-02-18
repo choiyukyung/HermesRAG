@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer
 import mysql.connector
 from config import DB_CONFIG
 from typing import List, Tuple
+import sys
 
 class SimilarityCalculator:
     def __init__(self, model_name: str = 'paraphrase-multilingual-mpnet-base-v2'):
@@ -105,7 +106,7 @@ if __name__ == "__main__":
     calc = SimilarityCalculator()
 
     # 사용 예시
-    query = "AI 일자리"
+    query = sys.argv[1]
     results = calc.find_similar_articles(query, top_n=10, similarity_threshold=0.3)
 
     print(f"'{query}'와 가장 유사한 기사:")
