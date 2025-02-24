@@ -2,6 +2,7 @@ import sys
 from typing import Dict, Any, List
 from transformers import T5ForConditionalGeneration, T5Tokenizer, MarianMTModel, MarianTokenizer
 from similarity_search import SimilaritySearcher
+import json
 
 class RagSummarizer:
     def __init__(self):
@@ -54,4 +55,4 @@ if __name__ == "__main__":
     articles = searcher.search_articles(query, top_n=5)
     result = summarizer.summarize_articles(articles)
 
-    print(result)
+    print(json.dumps(result))
