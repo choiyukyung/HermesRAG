@@ -112,6 +112,6 @@ class SimilaritySearcher:
         articles = self.get_article_details(article_ids)
 
         for article, (_, similarity) in zip(articles, similar_articles):
-            article["similarity"] = similarity
+            article["similarity"] = float(np.float32(similarity))
 
         return articles
