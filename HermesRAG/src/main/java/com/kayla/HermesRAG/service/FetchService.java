@@ -2,15 +2,11 @@ package com.kayla.HermesRAG.service;
 
 import com.kayla.HermesRAG.dto.GuardianApiDTO;
 import com.kayla.HermesRAG.entity.ArticleEntity;
-import com.kayla.HermesRAG.entity.FetchLogEntity;
 import com.kayla.HermesRAG.repository.ArticleRepository;
-import com.kayla.HermesRAG.repository.FetchLogRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -20,14 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 @Service
 @RequiredArgsConstructor
 public class FetchService {
 
     private final ArticleRepository articleRepository;
-    private final FetchLogRepository fetchLogRepository;
-
+    private final FetchLogService fetchLogService;
     private final RestTemplate restTemplate;
 
     @Value("${guardian.api.url}")
@@ -36,26 +30,6 @@ public class FetchService {
     @Value("${guardian.api.key}")
     private String guardianApiKey;
 
-    @Transactional
-    @Scheduled(cron = "0 10 00 * * ?") // 매일 자정 10분에 실행
-    public void scheduledFetchArticles() {
-
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-
-        // 빠진 날짜 있는지 확인
-        FetchLogEntity lastLog = fetchLogRepository.findTopByOrderByLastFetchedDateDesc();
-        LocalDate lastFetchedDate = (lastLog != null) ? lastLog.getLastFetchedDate() : LocalDate.MIN;
-
-        // 한 달 전 vs 마지막 날짜 다음 날
-        LocalDate oneMonthAgo = yesterday.minusMonths(1);
-        LocalDate startDate = lastFetchedDate.isBefore(oneMonthAgo) ? oneMonthAgo : lastFetchedDate.plusDays(1);
-
-        // 빠진 날짜를 고려해서 주기적으로 동안의 기사 가져오기
-        fetchArticles(startDate, yesterday);
-
-        // 마지막으로 가져온 날짜를 로그에 저장
-        saveFetchLog(yesterday);
-    }
 
     @Transactional // 메서드 실행을 하나의 트랜잭션으로 처리
     public HttpStatus fetchArticles(LocalDate from_date, LocalDate to_date) {
@@ -96,7 +70,7 @@ public class FetchService {
             }
 
             // 마지막으로 저장한 날짜
-            saveFetchLog(to_date);
+            fetchLogService.saveFetchLog(to_date);
 
             return HttpStatus.OK;
         } catch (Exception e) {
@@ -136,11 +110,4 @@ public class FetchService {
     }
 
 
-    // FetchLog
-    @Transactional
-    public void saveFetchLog(LocalDate lastFetchedDate) {
-        FetchLogEntity fetchLog = new FetchLogEntity();
-        fetchLog.setLastFetchedDate(lastFetchedDate);
-        fetchLogRepository.save(fetchLog);
-    }
 }
