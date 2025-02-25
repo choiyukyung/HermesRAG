@@ -7,6 +7,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -16,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 @Service
 @RequiredArgsConstructor
 public class FetchService {
@@ -29,16 +32,19 @@ public class FetchService {
     @Value("${guardian.api.key}")
     private String guardianApiKey;
 
-    @Transactional // 메서드 실행을 하나의 트랜잭션으로 처리
-    public HttpStatus fetchInitialArticles() {
-        try {
-            // 한 달
-            LocalDate today = LocalDate.now();
-            LocalDate monthAgo = today.minusMonths(1);
+    @Transactional
+    @Scheduled(cron = "0 10 0 * * ?") // 매일 자정 10분에 실행
+    public void scheduledFetchArticles() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        fetchArticles(yesterday, yesterday);
+    }
 
+    @Transactional // 메서드 실행을 하나의 트랜잭션으로 처리
+    public HttpStatus fetchArticles(LocalDate from_date, LocalDate to_date) {
+        try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            String todayString = today.format(formatter);
-            String monthAgoString = monthAgo.format(formatter);
+            String from_date_string = from_date.format(formatter);
+            String to_date_string = to_date.format(formatter);
 
             // 페이지네이션
             int page = 1;
@@ -51,7 +57,7 @@ public class FetchService {
                 // Guardian API 호출
                 url = guardianApiUrl + "?api-key=" + guardianApiKey
                         + "&section=technology|business|science&type=article" // IT 관련 기사만
-                        + "&from-date=" + monthAgoString + "&to-date=" + todayString
+                        + "&from-date=" + from_date_string + "&to-date=" + to_date_string
                         + "&page=" + page + "&page-size=" + page_size
                         + "&show-fields=trailText"; // 각 기사의 요약정보
 
