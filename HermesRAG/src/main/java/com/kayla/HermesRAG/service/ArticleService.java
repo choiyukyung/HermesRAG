@@ -33,25 +33,26 @@ public class ArticleService {
     @Transactional // 메서드 실행을 하나의 트랜잭션으로 처리
     public HttpStatus fetchWeekAndSaveArticles() {
         try {
-            // 일주일
+            // 한 달
             LocalDate today = LocalDate.now();
-            LocalDate weekAgo = today.minusDays(7);
+            LocalDate monthAgo = today.minusMonths(1);
 
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String todayString = today.format(formatter);
-            String weekAgoString = weekAgo.format(formatter);
+            String monthAgoString = monthAgo.format(formatter);
 
             // 페이지네이션
             int page = 1;
             int totalPages = 1;
-            int page_size = 100; // 크면 api 요청 수 줄어들음.
+            int page_size = 200; // 크면 api 요청 수 감소.
 
             List<ArticleEntity> allArticles = new ArrayList<>();
             String url = "";
             while (page <= totalPages) {
                 // Guardian API 호출
                 url = guardianApiUrl + "?api-key=" + guardianApiKey
-                        + "&from-date=" + weekAgoString + "&to-date=" + todayString
+                        + "&section=technology|business|science&type=article" // IT 관련 기사만
+                        + "&from-date=" + monthAgoString + "&to-date=" + todayString
                         + "&page=" + page + "&page-size=" + page_size
                         + "&show-fields=trailText"; // 각 기사의 요약정보
 
