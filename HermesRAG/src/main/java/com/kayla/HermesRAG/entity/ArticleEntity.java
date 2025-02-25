@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 public class ArticleEntity {
 
     @Id
+    @Column(length = 500)
     private String id;
 
     @Column(nullable = false)
@@ -37,10 +38,10 @@ public class ArticleEntity {
     @Column(name = "web_title")
     private String webTitle;
 
-    @Column(name = "web_url")
+    @Column(name = "web_url", length = 500)
     private String webUrl;
 
-    @Column(name = "api_url")
+    @Column(name = "api_url", length = 500)
     private String apiUrl;
 
     @Column(name = "trail_text", columnDefinition = "TEXT")

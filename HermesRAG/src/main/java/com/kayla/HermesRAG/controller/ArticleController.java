@@ -22,11 +22,6 @@ public class ArticleController {
         return HttpStatus.OK;
     }
 
-    @GetMapping("/fetch")
-    public HttpStatus fetchArticles() {
-        return articleService.fetchWeekAndSaveArticles(); // 서비스에서 반환된 상태 코드 사용
-    }
-
     @GetMapping("/get")
     public List<ArticleCoreDTO> getArticles() {
         return articleService.getAllArticles();
