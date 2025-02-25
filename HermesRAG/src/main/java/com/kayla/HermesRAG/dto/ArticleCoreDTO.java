@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ArticleSummaryDTO {
+public class ArticleCoreDTO {
     private String id;
     private String webTitle;
     private String trailText;
