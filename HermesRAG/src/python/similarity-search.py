@@ -2,9 +2,10 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import mysql.connector
 from config import DB_CONFIG
-from typing import List, Tuple, Dict, Any
+from typing import List, Tuple
+import sys
 
-class SimilaritySearcher:
+class SimilarityCalculator:
     def __init__(self, model_name: str = 'paraphrase-multilingual-mpnet-base-v2'):
         """
         Args:
@@ -101,17 +102,22 @@ class SimilaritySearcher:
             cursor.close()
             conn.close()
 
-    def search_articles(self, query: str, top_n: int = 5, similarity_threshold: float = 0.3) -> List[Dict[str, Any]]:
-        """유사 기사 검색 후 상세 정보 반환"""
-        similar_articles = self.find_similar_articles(query, top_n, similarity_threshold=similarity_threshold)
+if __name__ == "__main__":
+    calc = SimilarityCalculator()
 
-        if not similar_articles:
-            return []
+    # 사용 예시
+    query = sys.argv[1]
+    results = calc.find_similar_articles(query, top_n=10, similarity_threshold=0.3)
 
-        article_ids = [article_id for article_id, _ in similar_articles]
-        articles = self.get_article_details(article_ids)
+    print(f"'{query}'와 가장 유사한 기사:")
 
-        for article, (_, similarity) in zip(articles, similar_articles):
-            article["similarity"] = float(np.float32(similarity))
+    if results:
+        article_ids = [article_id for article_id, _ in results]
+        articles = calc.get_article_details(article_ids)
 
-        return articles
+        for i, (article, (_, similarity)) in enumerate(zip(articles, results)):
+            print(f"{i+1}. [유사도: {similarity:.4f}] {article['web_title']}")
+            print(f"   {article['trail_text'][:100]}...")
+            print()
+    else:
+        print("유사한 기사를 찾을 수 없습니다.")

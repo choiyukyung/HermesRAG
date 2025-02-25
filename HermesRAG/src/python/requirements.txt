@@ -2,6 +2,3 @@ sentence-transformers
 numpy
 mysql-connector-python
 requests
-
-transformers
-SentencePiece
