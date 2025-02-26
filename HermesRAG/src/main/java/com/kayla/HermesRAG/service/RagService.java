@@ -20,7 +20,7 @@ public class RagService {
             // JSON 파싱 후 DTO 변환
             return objectMapper.readValue(jsonOutput, RagResponseDTO.class);
         } catch (Exception e) {
-            return new RagResponseDTO("error", null, "Internal Server Error");
+            return new RagResponseDTO("error", "Internal Server Error", null, null);
         }
     }
 }

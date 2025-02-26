@@ -17,13 +17,6 @@ public class PythonExecutor {
                 command += " \"" + arg + "\"";
             }
 
-            System.out.println(command);
-
-            command = "cmd /c \"src\\python\\venv\\Scripts\\activate"
-                    + " && python src\\python\\rag_summarize.py \"" + "AI 일자리" + "\"";
-
-            System.out.println(command);
-
             // ProcessBuilder로 명령 실행 준비
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", command);
             processBuilder.directory(new java.io.File("C:\\Users\\ykcho\\Desktop\\HermesRAG\\HermesRAG"));

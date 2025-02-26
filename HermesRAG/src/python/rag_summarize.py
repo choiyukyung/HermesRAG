@@ -12,7 +12,7 @@ class RagSummarizer:
         self.t5_model = T5ForConditionalGeneration.from_pretrained(self.t5_model_name)
 
     def summarize_english_text(self, text: str) -> str:
-        """영어 텍스트 요약"""
+        # 영어 텍스트 요약
         try:
             input_text = f"Please summarize the following text: {text}"
             input_ids = self.t5_tokenizer(input_text, return_tensors="pt", max_length=1024, truncation=True).input_ids
@@ -30,7 +30,7 @@ class RagSummarizer:
 
 
     def summarize_articles(self, articles: List[Dict[str, Any]]) -> Dict[str, Any]:
-        """검색된 기사 요약"""
+        # 검색된 기사 요약
         if not articles:
             return {"status": "error", "message": "No similar articles found"}
 
@@ -42,6 +42,7 @@ class RagSummarizer:
 
         return {
             "status": "success",
+            "message": "Articles summarized successfully",
             "articles": articles,
             "english_summary": english_summary
         }
