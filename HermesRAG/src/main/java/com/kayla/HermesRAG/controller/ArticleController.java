@@ -1,6 +1,7 @@
 package com.kayla.HermesRAG.controller;
 
 import com.kayla.HermesRAG.dto.ArticleCoreDTO;
+import com.kayla.HermesRAG.dto.VectorDTO;
 import com.kayla.HermesRAG.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,5 +28,14 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
+    @GetMapping("/get/month")
+    public List<ArticleCoreDTO> getMonthArticles() {
+        return articleService.getMonthArticles();
+    }
+
+    @GetMapping("/get/vector")
+    public List<VectorDTO> getVectors() {
+        return articleService.getRecentVectorsEmbeddings();
+    }
 
 }

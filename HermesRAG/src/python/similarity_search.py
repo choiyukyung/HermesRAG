@@ -1,43 +1,39 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import mysql.connector
-from config import DB_CONFIG
+from config import DB_CONFIG, API_URL_VECTOR
 from typing import List, Tuple, Dict, Any
+import requests
+import base64
 
 class SimilaritySearcher:
     def __init__(self, model_name: str = 'paraphrase-multilingual-mpnet-base-v2'):
-        """
-        Args:
-            model_name: SentenceTransformer
-        """
+        #  model_name: SentenceTransformer
         self.model = SentenceTransformer(model_name)
         self.db_config = DB_CONFIG
 
-    def get_article_vectors(self) -> List[Tuple[int, np.ndarray, np.ndarray]]:
-        """DB에서 모든 기사의 벡터 가져옴"""
-        conn = mysql.connector.connect(**self.db_config)
-        cursor = conn.cursor()
+    def get_article_vectors(self, api_url_vector: str) -> List[Tuple[str, np.ndarray, np.ndarray]]:
+        # Spring Boot API에서 기사의 벡터 가져오기
+        response = requests.get(api_url_vector)
+        vector_data = response.json()
 
-        try:
-            query = """
-                SELECT id, web_title_embedding, trail_text_embedding 
-                FROM article 
-                WHERE web_title_embedding IS NOT NULL AND trail_text_embedding IS NOT NULL
-            """
-            cursor.execute(query)
-            results = []
+        results = []
 
-            for (article_id, web_title_embedding_bytes, trail_text_embedding_bytes) in cursor:
-                # BLOB 데이터를 NumPy 배열로 변환
-                web_title_vector = np.frombuffer(web_title_embedding_bytes, dtype=np.float32)
-                trail_text_vector = np.frombuffer(trail_text_embedding_bytes, dtype=np.float32)
-                results.append((article_id, web_title_vector, trail_text_vector))
+        for item in vector_data:
+            article_id = item['id']
 
-            return results
+            # Base64로 인코딩된 문자열을 바이트로 변환
+            web_title_embedding_bytes = base64.b64decode(item['webTitleEmbedding'])
+            trail_text_embedding_bytes = base64.b64decode(item['trailTextEmbedding'])
 
-        finally:
-            cursor.close()
-            conn.close()
+            # BLOB 데이터를 NumPy 배열로 변환
+            web_title_vector = np.frombuffer(web_title_embedding_bytes, dtype=np.float32)
+            trail_text_vector = np.frombuffer(trail_text_embedding_bytes, dtype=np.float32)
+
+            results.append((article_id, web_title_vector, trail_text_vector))
+
+        return results
+
 
     def cosine_similarity(self, vec1: np.ndarray, vec2: np.ndarray) -> float:
         """두 벡터 간의 코사인 유사도 계산"""
@@ -57,8 +53,8 @@ class SimilaritySearcher:
         # 쿼리 벡터화
         query_vector = self.model.encode(query)
 
-        # 모든 기사 벡터 가져오기
-        all_articles = self.get_article_vectors()
+        # 한 달간의 기사 벡터 가져오기
+        all_articles = self.get_article_vectors(API_URL_VECTOR)
         similarities = []
 
         for article_id, web_title_vector, trail_text_vector in all_articles:
