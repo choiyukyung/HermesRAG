@@ -25,16 +25,10 @@ public class ArticleService {
     }
 
     public List<ArticleCoreDTO> getMonthArticles() {
-        LocalDate yesterday = LocalDate.now().minusDays(1);
-        LocalDate monthAgo = yesterday.minusMonths(1);
-
-        LocalDateTime monthAgoTime = monthAgo.atStartOfDay();
-        List<ArticleEntity> articles = articleRepository.findByWebPublicationDateAfter(monthAgoTime);
-
-        return articles.stream()
-                .map(article -> new ArticleCoreDTO(article.getId(), article.getWebTitle(), article.getTrailText()))
-                .collect(Collectors.toList());
+        LocalDateTime monthAgoTime = LocalDate.now().minusMonths(1).atStartOfDay();
+        return articleRepository.findRecentArticlesWithCoreDTO(monthAgoTime);
     }
+
 
     public List<VectorDTO> getRecentVectorsEmbeddings() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
