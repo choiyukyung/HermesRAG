@@ -1,7 +1,7 @@
 import numpy as np
 from sentence_transformers import SentenceTransformer
 import mysql.connector
-from config import DB_CONFIG, API_URL_VECTOR
+from config import DB_CONFIG, API_URL_SEARCH
 from typing import List, Tuple, Dict, Any
 import requests
 import base64
@@ -54,7 +54,7 @@ class SimilaritySearcher:
         query_vector = self.model.encode(query)
 
         # 한 달간의 기사 벡터 가져오기
-        all_articles = self.get_article_vectors(API_URL_VECTOR)
+        all_articles = self.get_article_vectors(API_URL_SEARCH)
         similarities = []
 
         for article_id, web_title_vector, trail_text_vector in all_articles:

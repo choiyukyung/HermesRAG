@@ -1,18 +1,23 @@
 package com.kayla.HermesRAG.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kayla.HermesRAG.dto.ArticleCoreDTO;
 import com.kayla.HermesRAG.dto.VecResponseDTO;
+import com.kayla.HermesRAG.repository.ArticleRepository;
 import com.kayla.HermesRAG.utils.PythonExecutor;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class VectorizerService {
+public class VectorizeService {
     private final FetchService fetchService;
+    private final ArticleRepository articleRepository;
 
     private final PythonExecutor pythonExecutor;
     private final ObjectMapper objectMapper;
@@ -43,4 +48,10 @@ public class VectorizerService {
             throw new RuntimeException("Internal Server Error", e);
         }
     }
+
+    public List<ArticleCoreDTO> getMonthArticles() {
+        LocalDateTime monthAgoTime = LocalDate.now().minusMonths(1).atStartOfDay();
+        return articleRepository.findRecentArticlesWithCoreDTO(monthAgoTime);
+    }
+
 }

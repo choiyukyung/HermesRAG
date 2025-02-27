@@ -3,7 +3,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import mysql.connector
 from typing import List, Tuple
-from config import DB_CONFIG, API_URL  # config.py에서 설정 가져오기
+from config import DB_CONFIG, API_URL_VECTORIZE  # config.py에서 설정 가져오기
 import json
 
 class ArticleVectorizer:
@@ -66,6 +66,6 @@ class ArticleVectorizer:
 
 if __name__ == "__main__":
     vectorizer = ArticleVectorizer()
-    result = vectorizer.process_article(API_URL)
+    result = vectorizer.process_article(API_URL_VECTORIZE)
 
     print(json.dumps(result))

@@ -14,10 +14,10 @@ import java.time.format.DateTimeFormatter;
 @Component
 @Service
 @RequiredArgsConstructor
-public class SyncFetchService { // 자동 실행되는 fetch 메서드
+public class AutoVectorizeService { // 자동 실행되는 fetch and vectorize 메서드
 
     private final FetchLogService fetchLogService;
-    private final VectorizerService vectorizerService;
+    private final VectorizeService vectorizeService;
 
     @Scheduled(cron = "0 10 00 * * ?") // 매일 자정 10분에 실행
     public void scheduledFetchArticles() {
@@ -32,7 +32,7 @@ public class SyncFetchService { // 자동 실행되는 fetch 메서드
 
         if (!startDate.isAfter(yesterday)) {
             // 데이터 가져오고 벡터화까지
-            int processed_count = vectorizerService.fetchAndVectorize(startDate, yesterday);
+            int processed_count = vectorizeService.fetchAndVectorize(startDate, yesterday);
             System.out.println(processed_count + " Data Synchronization Complete!");
         } else {
             System.out.println("Up to date, no new data.");
@@ -50,7 +50,7 @@ public class SyncFetchService { // 자동 실행되는 fetch 메서드
 
         if (!startDate.isAfter(yesterday)) {
             // 데이터 가져오고 벡터화까지
-            int processed_count = vectorizerService.fetchAndVectorize(startDate, yesterday);
+            int processed_count = vectorizeService.fetchAndVectorize(startDate, yesterday);
             System.out.println(processed_count + " Data Synchronization Complete!");
         } else {
             System.out.println("Up to date, no new data.");

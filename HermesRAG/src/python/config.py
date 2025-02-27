@@ -5,5 +5,5 @@ DB_CONFIG = {
     'database': 'hermesdb'
 }
 
-API_URL = "http://localhost:8080/api/article/get/month"
-API_URL_VECTOR = "http://localhost:8080/api/article/get/vector"
+API_URL_VECTORIZE = "http://localhost:8080/api/vectorize/get"
+API_URL_SEARCH = "http://localhost:8080/api/search/get"
