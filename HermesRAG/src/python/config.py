@@ -5,4 +5,4 @@ DB_CONFIG = {
     'database': 'hermesdb'
 }
 
-API_URL = "http://localhost:8080/api/article/get"
+API_URL = "http://localhost:8080/api/article/get/month"

@@ -6,6 +6,7 @@ import com.kayla.HermesRAG.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,17 @@ public class ArticleService {
 
     public List<ArticleCoreDTO> getAllArticles() {
         List<ArticleEntity> articles = articleRepository.findAll();
+        return articles.stream()
+                .map(article -> new ArticleCoreDTO(article.getId(), article.getWebTitle(), article.getTrailText()))
+                .collect(Collectors.toList());
+    }
+
+    public List<ArticleCoreDTO> getMonthArticles() {
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate monthAgo = yesterday.minusMonths(1);
+
+        List<ArticleEntity> articles = articleRepository.findByPublishedDateAfter(monthAgo);
+
         return articles.stream()
                 .map(article -> new ArticleCoreDTO(article.getId(), article.getWebTitle(), article.getTrailText()))
                 .collect(Collectors.toList());

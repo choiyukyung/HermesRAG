@@ -27,5 +27,9 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
+    @GetMapping("/get/month")
+    public List<ArticleCoreDTO> getMonthArticles() {
+        return articleService.getMonthArticles();
+    }
 
 }
