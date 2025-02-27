@@ -2,7 +2,6 @@ package com.kayla.HermesRAG.service;
 
 import com.kayla.HermesRAG.entity.FetchLogEntity;
 import com.kayla.HermesRAG.repository.FetchLogRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +21,6 @@ public class FetchLogService {
         return lastFetchedDate.isBefore(oneMonthAgo) ? oneMonthAgo : lastFetchedDate.plusDays(1);
     }
 
-    @Transactional
     public void saveFetchLog(LocalDate lastFetchedDate) {
         FetchLogEntity fetchLog = new FetchLogEntity();
         fetchLog.setLastFetchedDate(lastFetchedDate);
