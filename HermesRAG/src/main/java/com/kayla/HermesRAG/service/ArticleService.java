@@ -37,6 +37,10 @@ public class ArticleService {
     }
 
     public List<VectorDTO> getRecentVectorsEmbeddings() {
-        return articleRepository.findVectorsWithEmbeddings();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate monthAgo = yesterday.minusMonths(1);
+
+        LocalDateTime monthAgoTime = monthAgo.atStartOfDay();
+        return articleRepository.findRecentVectorsWithEmbeddings(monthAgoTime);
     }
 }

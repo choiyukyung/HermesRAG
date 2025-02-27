@@ -18,6 +18,7 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, String> 
     @Query("SELECT new com.kayla.HermesRAG.dto.VectorDTO(a.id, a.webTitleEmbedding, a.trailTextEmbedding) " +
             "FROM ArticleEntity a " +
             "WHERE a.webTitleEmbedding IS NOT NULL " +
-            "AND a.trailTextEmbedding IS NOT NULL ")
-    List<VectorDTO> findVectorsWithEmbeddings();
+            "AND a.trailTextEmbedding IS NOT NULL " +
+            "AND a.webPublicationDate >= :oneMonthAgo")
+    List<VectorDTO> findRecentVectorsWithEmbeddings(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
 }
