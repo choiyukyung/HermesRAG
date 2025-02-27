@@ -32,7 +32,7 @@ public class FetchService {
 
 
     @Transactional // 메서드 실행을 하나의 트랜잭션으로 처리
-    public HttpStatus fetchArticles(LocalDate from_date, LocalDate to_date) {
+    public void fetchArticles(LocalDate from_date, LocalDate to_date) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             String from_date_string = from_date.format(formatter);
@@ -65,14 +65,11 @@ public class FetchService {
             System.out.println("url: " + url);
 
             // DB에 저장
-            for (ArticleEntity article : allArticles) {
-                articleRepository.save(article); // 트랜잭션 적용
-            }
+            articleRepository.saveAll(allArticles);
 
             // 마지막으로 저장한 날짜
             fetchLogService.saveFetchLog(to_date);
 
-            return HttpStatus.OK;
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to fetch and save articles", e);
         }

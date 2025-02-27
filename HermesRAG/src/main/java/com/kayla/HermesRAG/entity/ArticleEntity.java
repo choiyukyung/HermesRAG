@@ -1,9 +1,6 @@
 package com.kayla.HermesRAG.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -55,4 +52,11 @@ public class ArticleEntity {
 
     @Column(name = "pillar_name")
     private String pillarName;
+
+    // 새로 추가된 컬럼
+    @Lob // BLOB 타입으로 지정
+    private byte[] webTitleEmbedding;
+
+    @Lob // BLOB 타입으로 지정
+    private byte[] trailTextEmbedding;
 }

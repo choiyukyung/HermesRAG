@@ -15,6 +15,7 @@ import java.util.List;
 public class RagResponseDTO {
 
     private String status;
+    private String message;
     private List<RetrievedArticle> articles;
 
     @JsonProperty("english_summary")
