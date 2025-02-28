@@ -18,8 +18,8 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @GetMapping("/test")
-    public HttpStatus test() {
-        return HttpStatus.OK;
+    public String test() {
+        return "Hello React!";
     }
 
     @GetMapping("/core")
