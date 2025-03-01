@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -56,6 +58,13 @@ public class FetchService {
                 GuardianApiDTO guardianApiDTO = restTemplate.getForObject(url, GuardianApiDTO.class);
 
                 List<ArticleEntity> articles = getArticleEntities(guardianApiDTO);
+
+                // 전처리
+                for (ArticleEntity article : articles) {
+                    String processedTrailText = removeStrongTags(article.getTrailText());
+                    article.setTrailText(processedTrailText); // 후처리된 텍스트로 trailtext 업데이트
+                    allArticles.add(article);
+                }
                 allArticles.addAll(articles);
 
                 // 총 페이지 수는 요청을 보내면 알 수 있다.
@@ -104,6 +113,14 @@ public class FetchService {
         });
 
         return articles;
+    }
+
+    // 전처리
+    public static String removeStrongTags(String text) {
+        // <strong>와 </strong> 태그를 제거하고 텍스트만 추출
+        Pattern pattern = Pattern.compile("<strong>(.*?)</strong>");
+        Matcher matcher = pattern.matcher(text);
+        return matcher.replaceAll("$1");
     }
 
 
