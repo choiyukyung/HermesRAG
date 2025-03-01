@@ -3,7 +3,6 @@ package com.kayla.HermesRAG.controller;
 import com.kayla.HermesRAG.dto.ArticleCoreDTO;
 import com.kayla.HermesRAG.service.ArticleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
