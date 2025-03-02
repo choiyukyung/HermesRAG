@@ -1,7 +1,7 @@
 package com.kayla.HermesRAG.repository;
 
-import com.kayla.HermesRAG.dto.ArticleCoreDTO;
 import com.kayla.HermesRAG.dto.SearchRequestDTO;
+import com.kayla.HermesRAG.dto.VecRequestDTO;
 import com.kayla.HermesRAG.entity.ArticleEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,10 +15,10 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<ArticleEntity, String> {
 
     // JPQL 사용하면 엔티티를 중간에 매핑하지 않고 직접 DTO를 반환
-    @Query("SELECT new com.kayla.HermesRAG.dto.ArticleCoreDTO(a.id, a.webTitle, a.trailText) " +
+    @Query("SELECT new com.kayla.HermesRAG.dto.VecRequestDTO(a.id, a.webTitle, a.trailText) " +
             "FROM ArticleEntity a " +
             "WHERE a.webPublicationDate >= :oneMonthAgo")
-    List<ArticleCoreDTO> findRecentArticlesWithCoreDTO(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
+    List<VecRequestDTO> findArticlesFromLastMonthAsVecRequestDTO(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
 
 
     @Query("SELECT new com.kayla.HermesRAG.dto.SearchRequestDTO(a.id, a.webTitle, a.trailText, a.webTitleEmbedding, a.trailTextEmbedding) " +

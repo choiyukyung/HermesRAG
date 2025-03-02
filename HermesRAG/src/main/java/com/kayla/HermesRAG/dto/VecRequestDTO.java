@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class ArticleCoreDTO {
+public class VecRequestDTO {
     private String id;
     private String webTitle;
     private String trailText;

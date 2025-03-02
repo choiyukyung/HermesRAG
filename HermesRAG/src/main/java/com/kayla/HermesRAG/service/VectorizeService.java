@@ -1,7 +1,7 @@
 package com.kayla.HermesRAG.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.kayla.HermesRAG.dto.ArticleCoreDTO;
+import com.kayla.HermesRAG.dto.VecRequestDTO;
 import com.kayla.HermesRAG.dto.VecResponseDTO;
 import com.kayla.HermesRAG.repository.ArticleRepository;
 import com.kayla.HermesRAG.utils.PythonExecutor;
@@ -49,9 +49,9 @@ public class VectorizeService {
         }
     }
 
-    public List<ArticleCoreDTO> getMonthArticles() {
+    public List<VecRequestDTO> getMonthVecRequestDTO() {
         LocalDateTime monthAgoTime = LocalDate.now().minusMonths(1).atStartOfDay();
-        return articleRepository.findRecentArticlesWithCoreDTO(monthAgoTime);
+        return articleRepository.findArticlesFromLastMonthAsVecRequestDTO(monthAgoTime);
     }
 
 }
