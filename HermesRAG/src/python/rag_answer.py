@@ -18,6 +18,7 @@ class Rag:
             article_body: {text}
             
             Answer user_question in detail based on the article_body in Korean.
+            within 4 lines without emphasis.
             Use this JSON schema:
 
             Answer = {{"answer": str}}

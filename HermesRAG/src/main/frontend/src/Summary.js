@@ -1,6 +1,74 @@
 import { useState } from "react";
+import styled from 'styled-components';
 
-const CommandSummary = () => {
+const SummaryWrapper = styled.div`
+  padding: 20px;
+  text-align: center;
+  height: 100vh;
+  background-color: #fff8f1;
+`;
+
+const SearchInput = styled.input`
+  padding: 10px;
+  width: 300px;
+  margin-right: 10px;
+  border: 2px solid #ffa500;
+  border-radius: 5px;
+`;
+
+const SearchButton = styled.button`
+  padding: 10px 20px;
+  background-color: #ffa500;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #e67e22;
+  }
+`;
+
+const ResultContainer = styled.div`
+  margin-top: 20px;
+  text-align: left;
+  max-width: 1000px;
+  margin: auto;
+`;
+
+const ArticleList = styled.ul`
+  list-style-type: none;
+  padding-left: 0;
+`;
+
+const ArticleItem = styled.li`
+  margin-bottom: 10px;
+`;
+
+const ArticleLink = styled.a`
+  font-weight: bold;
+  font-size: 28px;
+  color: #ffa500;
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const ArticleSummary = styled.em`
+  font-style: italic;
+`;
+
+const Similarity = styled.small`
+  color: #888;
+`;
+
+const Dissatisfaction = styled.em`
+  color: #555;
+  font-size: 12px;
+`;
+
+
+const Summary = () => {
   const [command, setCommand] = useState(""); // 입력된 명령어
   const [responseData, setResponseData] = useState(null); // API 응답 저장
   const [loading, setLoading] = useState(false); // 로딩 상태
@@ -32,41 +100,41 @@ const CommandSummary = () => {
   };
 
   return (
-    <div style={{ padding: "20px", textAlign: "center" }}>
-      <h2>최신 뉴스 요약 검색</h2>
-      <input
+    <SummaryWrapper>
+      <h2>최신 기술과학 뉴스 요약</h2>
+      <SearchInput
         type="text"
         value={command}
         onChange={(e) => setCommand(e.target.value)}
         placeholder="키워드를 입력하세요..."
-        style={{ padding: "10px", width: "300px", marginRight: "10px" }}
       />
-      <button onClick={fetchSummary} style={{ padding: "10px 20px" }}>
-        검색
-      </button>
+      <SearchButton onClick={fetchSummary}>검색</SearchButton>
 
       {loading && <p>요약 중...</p>}
 
       {responseData && (
-        <div style={{ marginTop: "20px", textAlign: "left", maxWidth: "800px", margin: "auto" }}>
+        <ResultContainer>
           <h3>관련 뉴스 기사 요약:</h3>
           {responseData.articles && responseData.articles.length > 0 ? (
-            <ul>
+            <ArticleList>
               {responseData.articles.map((article, index) => (
-                <li key={index} style={{ marginBottom: "10px" }}>
-                  <a href={article.web_url} target="_blank"><strong>{article.web_title}</strong></a> <br />
-                  요약:<em> {article.korean_summary}</em> <br />
-                  <small>유사도: {article.similarity.toFixed(4)}</small>
-                </li>
+                <ArticleItem key={index}>
+                  <ArticleLink href={article.web_url} target="_blank">
+                    {article.web_title}
+                  </ArticleLink> <br />
+                  요약: <ArticleSummary>{article.korean_summary}</ArticleSummary> <br />
+                  <Similarity>유사도: {article.similarity.toFixed(4)}</Similarity>
+                </ArticleItem>
               ))}
-            </ul>
+            </ArticleList>
           ) : (
             <p>관련 뉴스가 없습니다.</p>
           )}
-        </div>
+          <Dissatisfaction><div>만족스러운 결과를 얻지 못하셨다면, 조금 더 자세히 검색해보세요.</div></Dissatisfaction>
+        </ResultContainer>
       )}
-    </div>
+    </SummaryWrapper>
   );
 };
 
-export default CommandSummary;
+export default Summary;
