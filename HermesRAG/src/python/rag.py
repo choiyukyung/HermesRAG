@@ -26,8 +26,23 @@ class Rag:
             }
         )
 
-        response_json = json.loads(response.text)
-        print(response_json)
+        try:
+            result = json.loads(response.text)
+        except json.JSONDecodeError:
+            return {"error": "Invalid JSON response from API"}
+
+        selected_ids = [article['selected_id'] for article in result]
+
+        selected_articles = self.get_selected_articles(articles, selected_ids)
+        return selected_articles
+
+    def get_selected_articles(self, articles, selected_ids):
+        selected_articles = []
+        for article in articles:
+            if article["id"] in selected_ids:
+                selected_articles.append(article)
+        return selected_articles
+
 
 if __name__ == "__main__":
     #API_KEY 환경 변수로 저장
@@ -43,4 +58,4 @@ if __name__ == "__main__":
 
     articles = searcher.search_articles(query, top_n=5)
     articlesTop3 = rag.select_top_3_articles(articles, query)
-    #print(json.dumps(articlesTop3))
+    print(json.dumps(articlesTop3))
