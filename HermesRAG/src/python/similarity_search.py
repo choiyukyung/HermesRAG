@@ -22,6 +22,7 @@ class SimilaritySearcher:
             article_id = item['id']
             web_title = item['webTitle']
             trail_text = item['trailText']
+            web_url = item['webUrl']
 
             # Base64로 인코딩된 문자열을 바이트로 변환
             web_title_embedding_bytes = base64.b64decode(item['webTitleEmbedding'])
@@ -31,7 +32,7 @@ class SimilaritySearcher:
             web_title_vector = np.frombuffer(web_title_embedding_bytes, dtype=np.float32)
             trail_text_vector = np.frombuffer(trail_text_embedding_bytes, dtype=np.float32)
 
-            results.append((article_id, web_title, trail_text, web_title_vector, trail_text_vector))
+            results.append((article_id, web_title, trail_text, web_url, web_title_vector, trail_text_vector))
 
         return results
 
@@ -56,7 +57,7 @@ class SimilaritySearcher:
         all_articles = self.get_article_and_vectors(API_URL_SEARCH)
         similarities = []
 
-        for article_id, web_title, trail_text, web_title_vector, trail_text_vector in all_articles:
+        for article_id, web_title, trail_text, web_url, web_title_vector, trail_text_vector in all_articles:
             # 제목 또는 본문 요약 벡터 선택
             article_vector = web_title_vector if use_web_title else trail_text_vector
 
@@ -68,19 +69,19 @@ class SimilaritySearcher:
             similarity = self.cosine_similarity(query_vector, article_vector)
             # 유사도가 임계값 이상인 경우에만 추가
             if similarity >= similarity_threshold:
-                similarities.append((article_id, similarity, web_title, trail_text))
+                similarities.append((article_id, similarity, web_title, trail_text, web_url))
 
         # 유사도 상위 N개 반환
         return sorted(similarities, key=lambda x: x[1], reverse=True)[:top_n]
 
     def search_articles(self, query: str, top_n: int = 5, similarity_threshold: float = 0.3) -> List[Dict[str, Any]]:
-        """유사 기사 검색 후 상세 정보 반환"""
+        # 유사 기사 검색 후 전체 정보 반환
         similar_articles = self.find_similar_articles(query, top_n, similarity_threshold=similarity_threshold)
 
         if not similar_articles:
             return []
 
         return [
-            {"id": article_id, "similarity": round(float(similarity), 4), "web_title": web_title, "trail_text": trail_text}
-            for article_id, similarity, web_title, trail_text in similar_articles
+            {"id": article_id, "similarity": round(float(similarity), 4), "web_title": web_title, "trail_text": trail_text, "web_url": web_url}
+            for article_id, similarity, web_title, trail_text, web_url in similar_articles
         ]

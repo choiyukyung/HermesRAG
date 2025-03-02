@@ -1,7 +1,8 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Home from "./Home";
-import Rag from "./CommandSummary";
+import Summary from "./Summary";
+import Answer from "./Answer";
 
 function App() {
 
@@ -10,7 +11,8 @@ function App() {
             <div className="App">
                 <Routes>
                     <Route path="/" element={<Home />} />
-                    <Route path="/rag" element={<Rag />} />
+                    <Route path="/Summary" element={<Summary />} />
+                    <Route path="/Answer" element={<Answer />} />
                 </Routes>
             </div>
         </BrowserRouter>

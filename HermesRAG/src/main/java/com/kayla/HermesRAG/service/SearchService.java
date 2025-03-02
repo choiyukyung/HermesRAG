@@ -15,11 +15,11 @@ public class SearchService {
 
     private final ArticleRepository articleRepository;
 
-    public List<SearchRequestDTO> getRecentVectorsEmbeddings() {
+    public List<SearchRequestDTO> getMonthSearchRequestDTO() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         LocalDate monthAgo = yesterday.minusMonths(1);
 
         LocalDateTime monthAgoTime = monthAgo.atStartOfDay();
-        return articleRepository.findRecentVectorsWithEmbeddings(monthAgoTime);
+        return articleRepository.findRecentArticlesWithEmbeddings(monthAgoTime);
     }
 }

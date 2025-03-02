@@ -33,12 +33,12 @@ const CommandSummary = () => {
 
   return (
     <div style={{ padding: "20px", textAlign: "center" }}>
-      <h2>뉴스 요약 검색</h2>
+      <h2>최신 뉴스 요약 검색</h2>
       <input
         type="text"
         value={command}
         onChange={(e) => setCommand(e.target.value)}
-        placeholder="검색어를 입력하세요..."
+        placeholder="키워드를 입력하세요..."
         style={{ padding: "10px", width: "300px", marginRight: "10px" }}
       />
       <button onClick={fetchSummary} style={{ padding: "10px 20px" }}>
@@ -48,18 +48,15 @@ const CommandSummary = () => {
       {loading && <p>요약 중...</p>}
 
       {responseData && (
-        <div style={{ marginTop: "20px", textAlign: "left", maxWidth: "600px", margin: "auto" }}>
-          <h3>요약 결과:</h3>
-          <p><strong>영어 요약:</strong> {responseData.english_summary || "없음"}</p>
-
-          <h3>관련 뉴스 기사:</h3>
+        <div style={{ marginTop: "20px", textAlign: "left", maxWidth: "800px", margin: "auto" }}>
+          <h3>관련 뉴스 기사 요약:</h3>
           {responseData.articles && responseData.articles.length > 0 ? (
             <ul>
               {responseData.articles.map((article, index) => (
                 <li key={index} style={{ marginBottom: "10px" }}>
-                  <strong>{article.web_title}</strong> <br />
-                  <em>{article.trail_text}</em> <br />
-                  <small>유사도: {article.similarity.toFixed(2)}</small>
+                  <a href={article.web_url} target="_blank"><strong>{article.web_title}</strong></a> <br />
+                  요약:<em> {article.korean_summary}</em> <br />
+                  <small>유사도: {article.similarity.toFixed(4)}</small>
                 </li>
               ))}
             </ul>

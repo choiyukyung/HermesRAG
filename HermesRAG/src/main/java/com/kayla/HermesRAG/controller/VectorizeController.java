@@ -1,6 +1,6 @@
 package com.kayla.HermesRAG.controller;
 
-import com.kayla.HermesRAG.dto.ArticleCoreDTO;
+import com.kayla.HermesRAG.dto.VecRequestDTO;
 import com.kayla.HermesRAG.service.VectorizeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class VectorizeController {
     private final VectorizeService vectorizeService;
 
     @GetMapping("/get")
-    public List<ArticleCoreDTO> getMonthArticles() {
-        return vectorizeService.getMonthArticles();
+    public List<VecRequestDTO> getMonthVecRequestDTO() {
+        return vectorizeService.getMonthVecRequestDTO();
     }
 
 

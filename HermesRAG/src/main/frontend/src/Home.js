@@ -29,8 +29,12 @@ const TitleText = styled.div`
 const Home = () => {
   const navigate = useNavigate();
 
-    const goToRagPage = () => {
-      navigate('/rag');
+    const goToSummaryPage = () => {
+      navigate('/summary');
+    };
+
+    const goToAnswerPage = () => {
+      navigate('/answer');
     };
 
   return (
@@ -41,12 +45,13 @@ const Home = () => {
       </LogoContainer>
       <div>AI 기반 뉴스 요약 및 검색 서비스</div>
       <div>
-        HermesRAG는 최신 뉴스를 AI 기반으로 분석하여 <b>맞춤형 요약</b>을 제공합니다.
+        HermesRAG는 사용자의 검색어와 가장 관련성이 높은 최신 기사 3개를 찾아 요약하여 제공합니다.
       </div>
       <div>
-        원하는 키워드로 <b>관련 뉴스</b>를 검색하고, 빠르게 핵심 내용을 확인하세요!
+         또한, 최신 기사 내용을 기반으로 사용자의 질문에 대한 답변도 제공합니다.
       </div>
-      <button onClick={goToRagPage}>요약하기</button>
+      <button onClick={goToSummaryPage}>요약하기</button>
+      <button onClick={goToAnswerPage}>질문하기</button>
     </HomeWrapper>
   );
 };

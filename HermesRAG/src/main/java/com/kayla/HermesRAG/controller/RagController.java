@@ -21,4 +21,10 @@ public class RagController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/answer")
+    public ResponseEntity<RagResponseDTO> ragAnswer(@RequestParam(value = "query") String query) {
+        RagResponseDTO response = ragService.answer(query);
+        return ResponseEntity.ok(response);
+    }
+
 }
