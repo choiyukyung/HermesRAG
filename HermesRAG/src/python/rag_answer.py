@@ -12,16 +12,16 @@ class Rag:
 
 
     def answer_to_ko(self, text: str, query: str) -> str:
-        # 한국어로 답변
+        # 영어로 답변
         try:
-            prompt = f"""사용자의 질문: {query}
-            기사 내용: {text}
+            prompt = f"""user_question: {query}
+            article_body: {text}
             
-            위의 기사를 바탕으로 사용자의 질문에 답하십시오.
+            Answer user_question based on the article_body in Korean.
             Use this JSON schema:
 
-            Summary = {{"korean_summary": str}}
-            Return: a single Summary object, not an array."""
+            Answer = {{"answer": str}}
+            Return: a single Answer object, not an array."""
             response = self.model.generate_content(
                 prompt,
                 generation_config={
@@ -30,13 +30,13 @@ class Rag:
             )
             try:
                 result = json.loads(response.text)
-                return result.get("korean_summary", "")
+                return result.get("answer", "")
             except json.JSONDecodeError:
                 return {"error": "Invalid JSON response from API"}
-        except Exception as e:
-            print(f"Error while summarizing: {e}")
-            return ""
 
+        except Exception as e:
+            print(f"Error while answering: {e}")
+            return ""
 
     def get_article_content(self, article_id):
         # 기사 본문 가져오기
@@ -61,15 +61,13 @@ class Rag:
 
         # 기사 내용 추출
         article_body = self.get_article_content(articles[0]['id'])
-        # answer = self.answer_to_ko(article_body, query)
+        answer = self.answer_to_ko(article_body, query)
 
-        # return {
-        #     "status": "success",
-        #     "message": answer,
-        #     "articles": articles
-        # }
-
-        print(article_body)
+        return {
+            "status": "success",
+            "message": answer,
+            "articles": articles
+        }
 
 
 if __name__ == "__main__":
@@ -86,4 +84,4 @@ if __name__ == "__main__":
 
     articles = searcher.search_articles(query, top_n=1)
     result = rag.answer_based_on_articles(articles, query)
-    # print(json.dumps(result))
+    print(json.dumps(result))
