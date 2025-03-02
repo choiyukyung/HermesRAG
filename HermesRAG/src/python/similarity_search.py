@@ -74,7 +74,7 @@ class SimilaritySearcher:
         return sorted(similarities, key=lambda x: x[1], reverse=True)[:top_n]
 
     def search_articles(self, query: str, top_n: int = 5, similarity_threshold: float = 0.3) -> List[Dict[str, Any]]:
-        """유사 기사 검색 후 상세 정보 반환"""
+        # 유사 기사 검색 후 전체 정보 반환
         similar_articles = self.find_similar_articles(query, top_n, similarity_threshold=similarity_threshold)
 
         if not similar_articles:
