@@ -1,5 +1,7 @@
 # HermesRAG
-HermesRAG project for Spring Boot
+Backend : Spring Boot
+AI(RAG) : (use sentence-BERT, Gemini)
+Frontend : React
 ### Development Period
 2025.02 ~ 2025.03
 ### Developer
