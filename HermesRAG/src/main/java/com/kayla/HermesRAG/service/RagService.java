@@ -24,4 +24,16 @@ public class RagService {
             throw new RuntimeException("Internal Server Error", e);
         }
     }
+
+    public RagResponseDTO answer(String query) {
+        try {
+            String jsonOutput = pythonExecutor.runPythonScript("src\\python\\rag_answer.py", query);
+
+            // JSON 파싱 후 DTO 변환
+            return objectMapper.readValue(jsonOutput, RagResponseDTO.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error", e);
+        }
+    }
 }

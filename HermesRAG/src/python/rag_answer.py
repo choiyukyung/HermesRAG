@@ -17,7 +17,7 @@ class Rag:
             prompt = f"""user_question: {query}
             article_body: {text}
             
-            Answer user_question based on the article_body in Korean.
+            Answer user_question in detail based on the article_body in Korean.
             Use this JSON schema:
 
             Answer = {{"answer": str}}
@@ -59,7 +59,7 @@ class Rag:
         if not articles:
             return {"status": "error", "message": "No similar articles found"}
 
-        # 기사 내용 추출
+        # 가장 유사한 기사 내용 추출
         article_body = self.get_article_content(articles[0]['id'])
         answer = self.answer_to_ko(article_body, query)
 
@@ -82,6 +82,6 @@ if __name__ == "__main__":
     searcher = SimilaritySearcher()
     rag = Rag(API_KEY)
 
-    articles = searcher.search_articles(query, top_n=1)
+    articles = searcher.search_articles(query, top_n=3)
     result = rag.answer_based_on_articles(articles, query)
     print(json.dumps(result))

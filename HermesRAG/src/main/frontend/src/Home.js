@@ -33,6 +33,10 @@ const Home = () => {
       navigate('/summary');
     };
 
+    const goToAnswerPage = () => {
+      navigate('/answer');
+    };
+
   return (
     <HomeWrapper>
       <LogoContainer>
@@ -47,6 +51,7 @@ const Home = () => {
          또한, 최신 기사 내용을 기반으로 사용자의 질문에 대한 답변도 제공합니다.
       </div>
       <button onClick={goToSummaryPage}>요약하기</button>
+      <button onClick={goToAnswerPage}>질문하기</button>
     </HomeWrapper>
   );
 };
