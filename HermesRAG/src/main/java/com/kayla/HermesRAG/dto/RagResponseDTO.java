@@ -29,6 +29,9 @@ public class RagResponseDTO {
         @JsonProperty("trail_text")
         private String trailText;
 
+        @JsonProperty("web_url")
+        private String webUrl;
+
         private float similarity;
 
         @JsonProperty("korean_summary")

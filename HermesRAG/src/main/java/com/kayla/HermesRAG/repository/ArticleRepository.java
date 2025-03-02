@@ -21,10 +21,10 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, String> 
     List<VecRequestDTO> findArticlesFromLastMonthAsVecRequestDTO(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
 
 
-    @Query("SELECT new com.kayla.HermesRAG.dto.SearchRequestDTO(a.id, a.webTitle, a.trailText, a.webTitleEmbedding, a.trailTextEmbedding) " +
+    @Query("SELECT new com.kayla.HermesRAG.dto.SearchRequestDTO(a.id, a.webTitle, a.trailText, a.webUrl, a.webTitleEmbedding, a.trailTextEmbedding) " +
             "FROM ArticleEntity a " +
             "WHERE a.webTitleEmbedding IS NOT NULL " +
             "AND a.trailTextEmbedding IS NOT NULL " +
             "AND a.webPublicationDate >= :oneMonthAgo")
-    List<SearchRequestDTO> findRecentVectorsWithEmbeddings(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
+    List<SearchRequestDTO> findRecentArticlesWithEmbeddings(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
 }

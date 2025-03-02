@@ -11,6 +11,7 @@ public class SearchRequestDTO {
     private String id;
     private String webTitle;
     private String trailText;
+    private String webUrl;
     private byte[] webTitleEmbedding;
     private byte[] trailTextEmbedding;
 }

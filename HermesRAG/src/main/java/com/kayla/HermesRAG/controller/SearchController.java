@@ -17,7 +17,7 @@ public class SearchController {
     private final SearchService searchService;
     @GetMapping("/get")
     public List<SearchRequestDTO> getVectors() {
-        return searchService.getRecentVectorsEmbeddings();
+        return searchService.getMonthSearchRequestDTO();
     }
 
 }
