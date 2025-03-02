@@ -54,7 +54,7 @@ const CommandSummary = () => {
             <ul>
               {responseData.articles.map((article, index) => (
                 <li key={index} style={{ marginBottom: "10px" }}>
-                  <strong>{article.web_title}</strong> <br />
+                  <a href={article.web_url} target="_blank"><strong>{article.web_title}</strong></a> <br />
                   요약:<em> {article.korean_summary}</em> <br />
                   <small>유사도: {article.similarity.toFixed(4)}</small>
                 </li>
