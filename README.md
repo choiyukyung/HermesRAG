@@ -1,7 +1,8 @@
 # HermesRAG
-Backend : Spring Boot
-AI(RAG) : (use sentence-BERT, Gemini)
-Frontend : React
+- Backend - Spring Boot
+- AI (RAG) - Python(model: sentence-BERT, Gemini)
+- Frontend - React
+
 ### Development Period
 2025.02 ~ 2025.03
 ### Developer
