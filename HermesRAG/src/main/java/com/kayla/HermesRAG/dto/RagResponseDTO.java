@@ -18,9 +18,6 @@ public class RagResponseDTO {
     private String message;
     private List<RetrievedArticle> articles;
 
-    @JsonProperty("english_summary")
-    private String englishSummary;
-
     @Getter
     @Setter
     public static class RetrievedArticle {
@@ -33,6 +30,9 @@ public class RagResponseDTO {
         private String trailText;
 
         private float similarity;
+
+        @JsonProperty("korean_summary")
+        private String koreanSummary;
     }
 
 }

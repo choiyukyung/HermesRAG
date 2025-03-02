@@ -15,7 +15,7 @@ public class RagService {
 
     public RagResponseDTO summarize(String query) {
         try {
-            String jsonOutput = pythonExecutor.runPythonScript("src\\python\\rag_summarize.py", query);
+            String jsonOutput = pythonExecutor.runPythonScript("src\\python\\rag.py", query);
 
             // JSON 파싱 후 DTO 변환
             return objectMapper.readValue(jsonOutput, RagResponseDTO.class);

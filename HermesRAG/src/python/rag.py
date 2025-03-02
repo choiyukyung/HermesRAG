@@ -36,12 +36,57 @@ class Rag:
         selected_articles = self.get_selected_articles(articles, selected_ids)
         return selected_articles
 
-    def get_selected_articles(self, articles, selected_ids):
+    def get_selected_articles(self, articles, selected_ids) -> List[Dict[str, Any]]:
         selected_articles = []
         for article in articles:
             if article["id"] in selected_ids:
                 selected_articles.append(article)
         return selected_articles
+
+
+    def summarize_en_to_ko(self, text: str) -> str:
+        # 영어 텍스트 요약
+        try:
+            prompt = f"""Summarize the following text in Korean, in JSON format: {text}
+            Ensure the summary ends with a complete sentence.
+            Use this JSON schema:
+
+            Summary = {{"korean_summary": str}}
+            Return: a single Summary object, not an array."""
+            response = self.model.generate_content(
+                prompt,
+                generation_config={
+                    "response_mime_type": "application/json"
+                }
+            )
+            try:
+                result = json.loads(response.text)
+                return result.get("korean_summary", "")
+            except json.JSONDecodeError:
+                return {"error": "Invalid JSON response from API"}
+        except Exception as e:
+            print(f"Error while summarizing: {e}")
+            return ""
+
+
+    def summarize_articles(self, articles: List[Dict[str, Any]]) -> Dict[str, Any]:
+        # 검색된 기사 한국어 요약
+        if not articles:
+            return {"status": "error", "message": "No similar articles found"}
+
+        for article in articles:
+            article_text = article.get('trail_text', '')
+            if article_text:
+                article['korean_summary'] = self.summarize_en_to_ko(article_text)
+            else:
+                article['korean_summary'] = "No summary available."
+
+
+        return {
+            "status": "success",
+            "message": "Articles summarized successfully",
+            "articles": articles
+        }
 
 
 if __name__ == "__main__":
@@ -58,4 +103,5 @@ if __name__ == "__main__":
 
     articles = searcher.search_articles(query, top_n=5)
     articlesTop3 = rag.select_top_3_articles(articles, query)
-    print(json.dumps(articlesTop3))
+    result = rag.summarize_articles(articlesTop3)
+    print(json.dumps(result))
