@@ -1,6 +1,6 @@
 package com.kayla.HermesRAG.service;
 
-import com.kayla.HermesRAG.dto.VectorDTO;
+import com.kayla.HermesRAG.dto.SearchRequestDTO;
 import com.kayla.HermesRAG.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,7 +15,7 @@ public class SearchService {
 
     private final ArticleRepository articleRepository;
 
-    public List<VectorDTO> getRecentVectorsEmbeddings() {
+    public List<SearchRequestDTO> getRecentVectorsEmbeddings() {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         LocalDate monthAgo = yesterday.minusMonths(1);
 

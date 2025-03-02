@@ -7,8 +7,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class VectorDTO {
+public class SearchRequestDTO {
     private String id;
+    private String webTitle;
+    private String trailText;
     private byte[] webTitleEmbedding;
     private byte[] trailTextEmbedding;
 }

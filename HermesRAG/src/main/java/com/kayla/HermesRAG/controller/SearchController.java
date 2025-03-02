@@ -1,6 +1,6 @@
 package com.kayla.HermesRAG.controller;
 
-import com.kayla.HermesRAG.dto.VectorDTO;
+import com.kayla.HermesRAG.dto.SearchRequestDTO;
 import com.kayla.HermesRAG.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,7 @@ public class SearchController {
 
     private final SearchService searchService;
     @GetMapping("/get")
-    public List<VectorDTO> getVectors() {
+    public List<SearchRequestDTO> getVectors() {
         return searchService.getRecentVectorsEmbeddings();
     }
 
