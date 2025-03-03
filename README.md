@@ -41,3 +41,8 @@ HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지
    - @Scheduled를 이용하여 주기적으로 최신 기사를 가져오고 벡터화하여 저장하도록 하였습니다.
 5. 필요한 모델
    - 위 과정에서 필요한 모델은 파이썬을 사용하여 로드됩니다. 벡터화+유사도 검색 모델과, 응답 생성 모델은 비용과 정확도를 고려하여 결정했습니다.
+  
+## Simple Spring Boot - AI Diagram
+<div align="center">
+<img src="https://github.com/user-attachments/assets/2cc3392e-0312-4e04-836b-69a70516249a" width="70%" />
+</div>
