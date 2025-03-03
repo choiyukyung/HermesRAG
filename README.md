@@ -1,26 +1,28 @@
 # HermesRAG
-- Backend - Spring Boot
-- AI (RAG) - Python(model: sentence-BERT, Gemini)
-- Frontend - React
+RAG 기반 최신 기술과학 정보 제공/답변 서비스
 
 ### Development Period
 2025.02 ~ 2025.03
 ### Developer
 @choiyukyung, 개인 프로젝트
+### 기술스택
+- Backend - Spring Boot
+- AI (RAG) - Python(model: sentence-BERT, Gemini)
+- Frontend - React.js
 
 ## Goal
-HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학 정보를 빠르게 제공하는 서비스를 목표로 합니다.
+HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지니스) 정보를 제공하는 서비스입니다.
 외부 뉴스 API를 활용하여 주기적으로 데이터를 수집하고, RAG 기술을 통해 사용자가 원하는 핵심 내용을 추출하여 제공합니다.
 
 ## Key Features
 1. 키워드 기반 최신 뉴스 검색 및 요약
-- 유사도 검색을 이용해서 5개의 기사를 검색하여 AI 모델에 제공하고,  AI 모델로 3개를 2차 선별하고 한국어 요약을 생성합니다.
+- 유사도 검색을 이용해서 검색된 기사를 AI 모델에 제공하고,  AI 모델로 기사를 2차 선별하고 한국어 요약을 생성합니다.
 
 ![image](https://github.com/user-attachments/assets/8bc5a878-c5fc-4c49-88df-af1ed08d98b7) | ![image](https://github.com/user-attachments/assets/387551df-c145-4a9c-8a2e-9cdc36cbcd6f)
 -- | -- |
 
 2. 질문 기반 최신 답변 생성
-- 유사도 검색을 이용해서 3개의 기사를 검색하여 본문을 AI 모델에 제공하고, AI 모델로 사용자의 질문에 대한 답변을 생성합니다.
+- 유사도 검색을 이용하여 검색된 기사를 AI 모델에 제공하고, AI 모델로 사용자의 질문에 대한 답변을 생성합니다.
 
 ![image](https://github.com/user-attachments/assets/f383499b-aea0-4ef0-92d7-b56314051402) | ![image](https://github.com/user-attachments/assets/1d6746c1-317a-4f9f-a94b-19043fec279f)
 -- | -- |
