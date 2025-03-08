@@ -1,5 +1,6 @@
 package com.kayla.HermesRAG.repository;
 
+import com.kayla.HermesRAG.dto.FaissLoadDTO;
 import com.kayla.HermesRAG.dto.SearchRequestDTO;
 import com.kayla.HermesRAG.dto.VecRequestDTO;
 import com.kayla.HermesRAG.entity.ArticleEntity;
@@ -27,4 +28,13 @@ public interface ArticleRepository extends JpaRepository<ArticleEntity, String> 
             "AND a.trailTextEmbedding IS NOT NULL " +
             "AND a.webPublicationDate >= :oneMonthAgo")
     List<SearchRequestDTO> findRecentArticlesWithEmbeddings(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
+
+
+    @Query("SELECT new com.kayla.HermesRAG.dto.FaissLoadDTO(a.id, a.webTitleEmbedding, a.trailTextEmbedding) " +
+            "FROM ArticleEntity a " +
+            "WHERE a.webTitleEmbedding IS NOT NULL " +
+            "AND a.trailTextEmbedding IS NOT NULL " +
+            "AND a.webPublicationDate >= :oneMonthAgo")
+    List<FaissLoadDTO> findRecentEmbeddings(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);
+
 }
