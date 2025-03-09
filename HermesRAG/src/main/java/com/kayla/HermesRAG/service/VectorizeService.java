@@ -50,7 +50,8 @@ public class VectorizeService {
     }
 
     public List<VecRequestDTO> getMonthVecRequestDTO() {
-        LocalDateTime monthAgoTime = LocalDate.now().minusMonths(1).atStartOfDay();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDateTime monthAgoTime = yesterday.minusMonths(1).atStartOfDay();
         return articleRepository.findArticlesFromLastMonthAsVecRequestDTO(monthAgoTime);
     }
 

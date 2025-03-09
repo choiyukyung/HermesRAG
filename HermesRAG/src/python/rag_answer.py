@@ -4,6 +4,8 @@ from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
 import requests
 from config import GUARDIAN_API_URL, GUARDIAN_API_KEY
+from faiss_index import FaissIndexer
+
 
 class Rag:
     def __init__(self, api_key: str):
@@ -72,6 +74,7 @@ class Rag:
 
 
 if __name__ == "__main__":
+
     #API_KEY 환경 변수로 저장
     API_KEY = os.getenv('GOOGLE_API_KEY')
 
@@ -79,10 +82,14 @@ if __name__ == "__main__":
         print("Error: GOOGLE_API_KEY environment variable not set.")
         sys.exit(1)
 
-    query = sys.argv[1]
-    searcher = SimilaritySearcher()
-    rag = Rag(API_KEY)
+    if len(sys.argv) < 2:
+        print("사용법: python search_articles.py <검색어>")
+    else:
+        indexer = FaissIndexer()
+        searcher = SimilaritySearcher(indexer)
+        rag = Rag(API_KEY)
 
-    articles = searcher.search_articles(query, top_n=3)
-    result = rag.answer_based_on_articles(articles, query)
-    print(json.dumps(result))
+        query = sys.argv[1]
+        similar_articles = searcher.find_similar_articles(query, top_n=5)
+        result = rag.answer_based_on_articles(similar_articles, query)
+        print(json.dumps(result))
