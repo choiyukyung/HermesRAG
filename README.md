@@ -44,5 +44,6 @@ HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지
   
 ## Simple Spring Boot - AI Diagram
 <div align="center">
-<img src="https://github.com/user-attachments/assets/2cc3392e-0312-4e04-836b-69a70516249a" width="70%" />
+<img src="https://github.com/user-attachments/assets/bd8f65c4-7a39-483a-ba70-bea04c6f3b2a" width="70%" />
 </div>
+
