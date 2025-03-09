@@ -1,59 +1,56 @@
 import requests
 import numpy as np
-from config import API_URL_FAISS
-import base64
+from config import API_URL_SEARCH
 import faiss
+import base64
 
 class FaissIndexer:
-    def load_vectors_from_db(self) -> list:
-        # 벡터 데이터를 API에서 가져오기
-        response = requests.get(API_URL_FAISS)
-        if response.status_code != 200:
-            print(f"Error loading vectors: {response.text}")
-            return []
+    def __init__(self, dimension=768):
+        self.dimension = dimension
+        self.index = faiss.IndexFlatL2(dimension)  # L2 거리 기반 인덱스
+        self.articles = []  # 기사 데이터 저장용 리스트
 
-        article_data = response.json()
-        vectors = []
+        # 초기화 과정에서 인덱스 생성
+        self.load_vectors_from_db()
 
-        for item in article_data:
-            try:
-                # base64로 인코딩된 벡터를 디코딩하여 numpy 배열로 변환
-                web_title_vector = np.frombuffer(base64.b64decode(item['webTitleEmbedding']), dtype=np.float32)
-                trail_text_vector = np.frombuffer(base64.b64decode(item['trailTextEmbedding']), dtype=np.float32)
-                vectors.append((web_title_vector, trail_text_vector))
-            except Exception as e:
-                print(f"Error processing vectors for article {item['id']}: {e}")
-                continue
+    def decode_embedding(self, embedding_str):
+        # Base64로 인코딩된 임베딩을 복원하여 numpy 배열로 변환
+        try:
+            decoded_bytes = base64.b64decode(embedding_str)
+            float_array = np.frombuffer(decoded_bytes, dtype=np.float32)
+            return float_array
+        except Exception as e:
+            print(f"error while decoding: {e}")
+            return np.zeros(self.dimension, dtype=np.float32)  # 오류 발생 시 0 벡터 반환
 
-        return vectors
 
-    def create_faiss_index(self, vectors: list):
-        # 벡터를 FAISS 인덱스로 변환
-        if not vectors:
-            print("No vectors to index.")
-            return None
+    def load_vectors_from_db(self):
+        # API에서 벡터 데이터를 가져와 FAISS 인덱스에 추가
+        try:
+            response = requests.get(API_URL_SEARCH, timeout=5)
+            response.raise_for_status()  # 요청 실패 시 예외
 
-        # 벡터 차원(d) 추출
-        d = len(vectors[0][0])  # 첫 번째 벡터의 차원
+            article_data = response.json()
+            if not article_data:
+                print("Warning: No article data received from API")
+                return
 
-        # FAISS 인덱스 생성 (Inner Product 방식으로)
-        index = faiss.IndexFlatIP(d)
+            self.articles = article_data
+            article_vectors = np.array(
+                [self.decode_embedding(article["trailTextEmbedding"]) for article in article_data]
+            )
 
-        # 벡터들만 2D 배열로 변환하여 FAISS에 추가
-        all_vectors = np.array([vec[0] for vec in vectors] + [vec[1] for vec in vectors])  # 제목과 내용 벡터 모두
-        index.add(all_vectors.astype(np.float32))
+            if article_vectors.shape[0] > 0:  # 벡터가 존재하는 경우에만 추가
+                self.index.add(article_vectors)
+            else:
+                print("Warning: No valid vectors to add to FAISS index")
 
-        print(f"FAISS index created with {index.ntotal} vectors.")
-        return index
+        except requests.RequestException as e:
+            print(f"Error fetching vectors from API: {e}")
 
-if __name__ == "__main__":
-    loader = FaissIndexer()
-    vectors = loader.load_vectors_from_db()
+    def get_index(self):
+        return self.index
 
-    # FAISS 인덱스 생성
-    faiss_index = loader.create_faiss_index(vectors)
-
-    if faiss_index:
-        print(f"FAISS index successfully created and contains {faiss_index.ntotal} vectors.")
-    else:
-        print("Failed to create FAISS index.")
+    def get_articles(self):
+        # 기사 데이터
+        return self.articles
