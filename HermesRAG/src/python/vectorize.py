@@ -1,10 +1,13 @@
 import requests
 import numpy as np
 from sentence_transformers import SentenceTransformer
-import mysql.connector
 from typing import List, Tuple
-from config import DB_CONFIG, API_URL_VECTORIZE  # config.py에서 설정 가져오기
+from config import DB_CONFIG, API_URL_VECTORIZE, QDRANT_DATA_PATH  # config.py에서 설정 가져오기
 import json
+from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct
+import uuid
+
 
 class ArticleVectorizer:
     def __init__(self, model_name: str = 'paraphrase-multilingual-mpnet-base-v2'):
@@ -16,46 +19,71 @@ class ArticleVectorizer:
         # Spring Boot API에서 뉴스 데이터 가져오기
         response = requests.get(api_url)
         article_data = response.json()
-        # article 테이블의 id, web_title, trail_text 사용
-        return [(item['id'], item['webTitle'], item['trailText']) for item in article_data]
+        return [(item['id'], item['webTitle'], item['trailText'], item['webUrl'], item['webPublicationDate']) for item in article_data]
 
     def vectorize_text(self, text: str) -> np.ndarray:
         # 텍스트 벡터화
         return self.model.encode(text)
 
-    def save_vectors_to_db(self, article_id: str, web_title_vector: np.ndarray, trail_text_vector: np.ndarray):
-        # 벡터화된 데이터를 DB에 저장
-        vector_bytes_web_title = web_title_vector.tobytes()
-        vector_bytes_trail_text = trail_text_vector.tobytes()
+    def save_vectors_to_qdrant(self, article_id: str, web_title_vector: np.ndarray, trail_text_vector: np.ndarray, web_title: str, trail_text: str, web_url: str, web_publication_date: str):
+        # Qdrant 클라이언트 연결 (로컬 파일에)
+        client = QdrantClient(path=QDRANT_DATA_PATH)
 
-        conn = mysql.connector.connect(**self.db_config)
-        cursor = conn.cursor()
+        # Qdrant 컬렉션 생성 (한 번만 실행하면 됨)
+        client.recreate_collection(
+            collection_name="articles",
+            vectors_config={"size": 768, "distance": "Cosine"}  # SBERT 임베딩 기준
+        )
 
-        try:
-            # 테이블명과 컬럼명을 실제 DB 스키마에 맞게 수정
-            query = """
-                UPDATE article
-                SET web_title_embedding = %s, trail_text_embedding = %s
-                WHERE id = %s
-            """
-            cursor.execute(query, (vector_bytes_web_title, vector_bytes_trail_text, article_id))
-            conn.commit()
-        finally:
-            cursor.close()
-            conn.close()
+        # article_id를 UUID로 변환
+        article_id_uuid = str(uuid.uuid5(uuid.NAMESPACE_DNS, article_id))
+
+        # trail_id는 UUID에 접미사를 추가하여 고유한 ID 생성
+        trail_id_uuid = str(uuid.uuid5(uuid.NAMESPACE_DNS, f"{article_id}_trail"))
+
+        # 벡터 저장
+        client.upsert(
+            collection_name="articles",
+            points=[
+                PointStruct(
+                    id=article_id_uuid,
+                    vector=web_title_vector.tolist(),  # numpy → 리스트 변환
+                    payload={
+                        "type": "web_title",
+                        "article_id": article_id,
+                        "web_title": web_title,
+                        "trail_text": trail_text,
+                        "web_url": web_url,
+                        "web_publication_date": web_publication_date
+                    } # 벡터 임베딩값과 같이 추가 데이터 저장 가능(속도 영향 적음)
+                ),
+                PointStruct(
+                    id=trail_id_uuid,  # trail_text는 id를 다르게 설정
+                    vector=trail_text_vector.tolist(),
+                    payload={
+                        "type": "web_title",
+                        "article_id": article_id,
+                        "web_title": web_title,
+                        "trail_text": trail_text,
+                        "web_url": web_url,
+                        "web_publication_date": web_publication_date
+                    }
+                )
+            ]
+        )
 
     def process_article(self, api_url: str):
         # 전체 프로세스 실행
         article_items = self.get_article_from_api(api_url)
         processed_count = 0  # 처리된 기사 수
 
-        for article_id, web_title, trail_text in article_items:
+        for article_id, web_title, trail_text, web_url, web_publication_date in article_items:
             # 제목과 내용 벡터화
             web_title_vector = self.vectorize_text(web_title)
             trail_text_vector = self.vectorize_text(trail_text)
 
             # DB에 저장
-            self.save_vectors_to_db(article_id, web_title_vector, trail_text_vector)
+            self.save_vectors_to_qdrant(article_id, web_title_vector, trail_text_vector, web_title, trail_text, web_url, web_publication_date)
             processed_count += 1
 
         return {

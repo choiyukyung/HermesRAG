@@ -7,6 +7,12 @@ import java.io.InputStreamReader;
 
 @Component
 public class PythonExecutor {
+    private final ProjectRootFinder projectRootFinder;
+
+    public PythonExecutor(ProjectRootFinder projectRootFinder) {
+        this.projectRootFinder = projectRootFinder;
+    }
+
     public String runPythonScript(String scriptPath, String... args) {
         try {
             // 가상 환경 활성화 + Python 스크립트
@@ -19,7 +25,7 @@ public class PythonExecutor {
 
             // ProcessBuilder로 명령 실행 준비
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", command);
-            processBuilder.directory(new java.io.File("C:\\Users\\ykcho\\Desktop\\HermesRAG\\HermesRAG"));
+            processBuilder.directory(new java.io.File(projectRootFinder.getProjectRoot()));
 
             // Python 스크립트 실행
             Process process = processBuilder.start();

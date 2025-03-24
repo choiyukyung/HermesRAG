@@ -3,8 +3,8 @@ import os, json, sys
 from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
 import requests
-from config import GUARDIAN_API_URL, GUARDIAN_API_KEY
-from faiss_index import FaissIndexer
+from config import GUARDIAN_API_URL, GUARDIAN_API_KEY, QDRANT_DATA_PATH
+from qdrant_client import QdrantClient
 
 
 class Rag:
@@ -85,8 +85,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("사용법: python search_articles.py <검색어>")
     else:
-        indexer = FaissIndexer()
-        searcher = SimilaritySearcher(indexer)
+        client = QdrantClient(path=QDRANT_DATA_PATH)
+        searcher = SimilaritySearcher(client)
         rag = Rag(API_KEY)
 
         query = sys.argv[1]

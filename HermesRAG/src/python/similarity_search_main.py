@@ -1,17 +1,15 @@
-import sys
-import json
-from similarity_search import SimilaritySearcher  # 검색 관련 코드가 있는 모듈
-
-def main():
-    if len(sys.argv) < 2:
-        print("사용법: python search_articles.py <검색어>")
-        return
-
-    query = sys.argv[1]
-    service = SimilaritySearcher()  # 검색 서비스 객체 생성
-    results = service.search_articles(query, top_n=5)  # 검색 실행
-
-    print(json.dumps(results, indent=4, ensure_ascii=False))  # JSON 형식으로 출력
+from qdrant_client import QdrantClient
+from similarity_search import SimilaritySearcher
+from config import QDRANT_DATA_PATH
 
 if __name__ == "__main__":
-    main()
+    # Qdrant 클라이언트 연결
+    client = QdrantClient(path=QDRANT_DATA_PATH)
+
+    # SimilaritySearcher 객체 생성
+    searcher = SimilaritySearcher(client)
+
+    query = "AI 일자리"
+    similar_articles = searcher.find_similar_articles(query, top_n=5)
+
+    print("검색 결과:", similar_articles)

@@ -39,3 +39,6 @@ out/
 ### Python ###
 src/python/venv/
 
+### Qdrant ###
+src/python/qdrant_data/
+
