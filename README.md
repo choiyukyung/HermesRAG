@@ -6,8 +6,8 @@ RAG 기반 최신 기술과학 기사 제공/답변 서비스
 ### Developer
 @choiyukyung, 개인 프로젝트
 ### 기술스택
-- Backend - Spring Boot
-- AI (RAG) - Python(model: sentence-BERT, Gemini)
+- Backend - Spring Boot, MySQL
+- AI (RAG) - Python(model: sentence-BERT, Gemini), FAISS, Qdrant
 - Frontend - React.js
 
 ## Goal
@@ -32,7 +32,7 @@ HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지
 
 ## Technologies Used
 1. 벡터화
-   - 뉴스 기사를 벡터화하여 수치적인 형태로 변환해서 유사도 검색이 쉽도록 합니다.  
+   - 뉴스 기사를 벡터화하여 벡터 데이터베이스에 저장해서 유사도 검색이 쉽도록 합니다.
 2. 유사도 검색
    - 사용자 질의가 들어오면 같은 모델로 벡터화하여 코사인 유사도를 계산합니다. 키워드 검색과 달리 유사한 내용도 검색이 가능합니다.
 3. RAG(Retrieval-Augmented Generation)
@@ -44,6 +44,6 @@ HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지
   
 ## Simple Spring Boot - AI Diagram
 <div align="center">
-<img src="https://github.com/user-attachments/assets/bd8f65c4-7a39-483a-ba70-bea04c6f3b2a" width="70%" />
+<img src="https://github.com/user-attachments/assets/cb6dd14d-e578-4a81-84d3-b1bcac19429a" width="70%" />
 </div>
 
