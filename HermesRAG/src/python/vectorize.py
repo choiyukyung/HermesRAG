@@ -2,7 +2,7 @@ import requests
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from typing import List, Tuple
-from config import DB_CONFIG, API_URL_VECTORIZE  # config.py에서 설정 가져오기
+from config import DB_CONFIG, API_URL_VECTORIZE, QDRANT_DATA_PATH  # config.py에서 설정 가져오기
 import json
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct
@@ -27,7 +27,7 @@ class ArticleVectorizer:
 
     def save_vectors_to_qdrant(self, article_id: str, web_title_vector: np.ndarray, trail_text_vector: np.ndarray, web_title: str, trail_text: str, web_url: str, web_publication_date: str):
         # Qdrant 클라이언트 연결 (로컬 파일에)
-        client = QdrantClient(path="qdrant_data")
+        client = QdrantClient(path=QDRANT_DATA_PATH)
 
         # Qdrant 컬렉션 생성 (한 번만 실행하면 됨)
         client.recreate_collection(

@@ -1,9 +1,10 @@
 from qdrant_client import QdrantClient
 from similarity_search import SimilaritySearcher
+from config import QDRANT_DATA_PATH
 
 if __name__ == "__main__":
     # Qdrant 클라이언트 연결
-    client = QdrantClient(path="qdrant_data")
+    client = QdrantClient(path=QDRANT_DATA_PATH)
 
     # SimilaritySearcher 객체 생성
     searcher = SimilaritySearcher(client)

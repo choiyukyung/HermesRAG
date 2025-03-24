@@ -3,7 +3,7 @@ import os, json, sys
 from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
 import requests
-from config import GUARDIAN_API_URL, GUARDIAN_API_KEY
+from config import GUARDIAN_API_URL, GUARDIAN_API_KEY, QDRANT_DATA_PATH
 from qdrant_client import QdrantClient
 
 
@@ -44,7 +44,6 @@ class Rag:
     def get_article_content(self, article_id):
         # 기사 본문 가져오기
         url = f'{GUARDIAN_API_URL}/{article_id}?api-key={GUARDIAN_API_KEY}&show-fields=body'
-        print(url)
 
         # API 요청
         response = requests.get(url)
@@ -86,7 +85,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("사용법: python search_articles.py <검색어>")
     else:
-        client = QdrantClient(path="qdrant_data")
+        client = QdrantClient(path=QDRANT_DATA_PATH)
         searcher = SimilaritySearcher(client)
         rag = Rag(API_KEY)
 

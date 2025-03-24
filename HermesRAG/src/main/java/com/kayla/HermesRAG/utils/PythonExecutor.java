@@ -19,7 +19,7 @@ public class PythonExecutor {
 
             // ProcessBuilder로 명령 실행 준비
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", command);
-            processBuilder.directory(new java.io.File("C:\\Users\\ykcho\\Desktop\\HermesRAG\\HermesRAG\\src\\python"));
+            processBuilder.directory(new java.io.File("C:\\Users\\ykcho\\Desktop\\HermesRAG\\HermesRAG"));
 
             // Python 스크립트 실행
             Process process = processBuilder.start();
