@@ -2,8 +2,7 @@ import google.generativeai as genai
 import os, json, sys
 from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
-from faiss_index import FaissIndexer
-
+from qdrant_client import QdrantClient
 
 class Rag:
     def __init__(self, api_key: str):
@@ -103,8 +102,9 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("사용법: python search_articles.py <검색어>")
     else:
-        indexer = FaissIndexer()
-        searcher = SimilaritySearcher(indexer)
+        # Qdrant 클라이언트 연결
+        client = QdrantClient(path="qdrant_data")
+        searcher = SimilaritySearcher(client)
         rag = Rag(API_KEY)
 
         query = sys.argv[1]
@@ -112,3 +112,4 @@ if __name__ == "__main__":
         articlesTop3 = rag.select_top_3_articles(similar_articles, query)
         result = rag.summarize_articles(articlesTop3)
         print(json.dumps(result))
+
