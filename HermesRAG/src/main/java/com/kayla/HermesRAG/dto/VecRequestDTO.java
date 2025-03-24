@@ -11,4 +11,5 @@ public class VecRequestDTO {
     private String id;
     private String webTitle;
     private String trailText;
+    private String webUrl;
 }

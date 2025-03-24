@@ -16,7 +16,7 @@ import java.util.List;
 public interface ArticleRepository extends JpaRepository<ArticleEntity, String> {
 
     // JPQL 사용하면 엔티티를 중간에 매핑하지 않고 직접 DTO를 반환
-    @Query("SELECT new com.kayla.HermesRAG.dto.VecRequestDTO(a.id, a.webTitle, a.trailText) " +
+    @Query("SELECT new com.kayla.HermesRAG.dto.VecRequestDTO(a.id, a.webTitle, a.trailText, a.webUrl) " +
             "FROM ArticleEntity a " +
             "WHERE a.webPublicationDate >= :oneMonthAgo")
     List<VecRequestDTO> findArticlesFromLastMonthAsVecRequestDTO(@Param("oneMonthAgo") LocalDateTime oneMonthAgo);

@@ -24,7 +24,7 @@ class SimilaritySearcher:
             similarity = 1 / (1 + result.score)  # L2 거리를 0~1 사이의 유사도로 변환
 
             results.append({
-                "id": result.id,
+                "id": result.payload.get("article_id", ""),
                 "similarity": round(float(similarity), 4),
                 "web_title": result.payload.get("web_title", ""),
                 "trail_text": result.payload.get("trail_text", ""),
