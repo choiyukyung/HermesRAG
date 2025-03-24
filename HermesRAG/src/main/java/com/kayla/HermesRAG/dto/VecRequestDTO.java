@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -12,4 +14,5 @@ public class VecRequestDTO {
     private String webTitle;
     private String trailText;
     private String webUrl;
+    private LocalDateTime webPublicationDate;
 }

@@ -19,14 +19,13 @@ class ArticleVectorizer:
         # Spring Boot API에서 뉴스 데이터 가져오기
         response = requests.get(api_url)
         article_data = response.json()
-        # article 테이블의 id, web_title, trail_text 사용
-        return [(item['id'], item['webTitle'], item['trailText'], item['webUrl']) for item in article_data]
+        return [(item['id'], item['webTitle'], item['trailText'], item['webUrl'], item['webPublicationDate']) for item in article_data]
 
     def vectorize_text(self, text: str) -> np.ndarray:
         # 텍스트 벡터화
         return self.model.encode(text)
 
-    def save_vectors_to_qdrant(self, article_id: str, web_title_vector: np.ndarray, trail_text_vector: np.ndarray, web_title: str, trail_text: str, web_url: str):
+    def save_vectors_to_qdrant(self, article_id: str, web_title_vector: np.ndarray, trail_text_vector: np.ndarray, web_title: str, trail_text: str, web_url: str, web_publication_date: str):
         # Qdrant 클라이언트 연결 (로컬 파일에)
         client = QdrantClient(path="qdrant_data")
 
@@ -49,12 +48,26 @@ class ArticleVectorizer:
                 PointStruct(
                     id=article_id_uuid,
                     vector=web_title_vector.tolist(),  # numpy → 리스트 변환
-                    payload={"type": "web_title", "article_id": article_id, "web_title": web_title, "trail_text": trail_text, "web_url": web_url} # 벡터 임베딩값과 같이 추가 데이터 저장 가능(속도 영향 적음)
+                    payload={
+                        "type": "web_title",
+                        "article_id": article_id,
+                        "web_title": web_title,
+                        "trail_text": trail_text,
+                        "web_url": web_url,
+                        "web_publication_date": web_publication_date
+                    } # 벡터 임베딩값과 같이 추가 데이터 저장 가능(속도 영향 적음)
                 ),
                 PointStruct(
                     id=trail_id_uuid,  # trail_text는 id를 다르게 설정
                     vector=trail_text_vector.tolist(),
-                    payload={"type": "trail_text", "article_id": article_id, "web_title": web_title, "trail_text": trail_text, "web_url": web_url}
+                    payload={
+                        "type": "web_title",
+                        "article_id": article_id,
+                        "web_title": web_title,
+                        "trail_text": trail_text,
+                        "web_url": web_url,
+                        "web_publication_date": web_publication_date
+                    }
                 )
             ]
         )
@@ -64,13 +77,13 @@ class ArticleVectorizer:
         article_items = self.get_article_from_api(api_url)
         processed_count = 0  # 처리된 기사 수
 
-        for article_id, web_title, trail_text, web_url in article_items:
+        for article_id, web_title, trail_text, web_url, web_publication_date in article_items:
             # 제목과 내용 벡터화
             web_title_vector = self.vectorize_text(web_title)
             trail_text_vector = self.vectorize_text(trail_text)
 
             # DB에 저장
-            self.save_vectors_to_qdrant(article_id, web_title_vector, trail_text_vector, web_title, trail_text, web_url)
+            self.save_vectors_to_qdrant(article_id, web_title_vector, trail_text_vector, web_title, trail_text, web_url, web_publication_date)
             processed_count += 1
 
         return {
