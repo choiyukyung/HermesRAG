@@ -3,7 +3,7 @@ import os, json, sys
 from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
 from qdrant_client import QdrantClient
-from config import QDRANT_DATA_PATH
+from config import QDRANT_SERVER_HOST, QDRANT_SERVER_PORT
 
 class Rag:
     def __init__(self, api_key: str):
@@ -103,8 +103,7 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("사용법: python search_articles.py <검색어>")
     else:
-        # Qdrant 클라이언트 연결
-        client = QdrantClient(path=QDRANT_DATA_PATH)
+        client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
         searcher = SimilaritySearcher(client)
         rag = Rag(API_KEY)
 
