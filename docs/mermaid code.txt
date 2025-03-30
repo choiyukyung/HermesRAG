@@ -1,6 +1,5 @@
 flowchart TB
     %% 주요 컴포넌트 정의
-    User((사용자))
     
     subgraph "프론트엔드"
         React["React
@@ -29,23 +28,27 @@ flowchart TB
     
     subgraph "Python 서비스"
         direction TB
-            
         subgraph AIFunctions ["AI 기능"]
             direction LR
+            Python_Vectorize["vectorize"]
+            Similarity_Search["similarity_search"]
+            Faiss_Index["faiss_index"]
             RAG_Answer["rag_answer"]
             RAG_Summary["rag_summary"]
-            Similarity_Search["similarity_search"]
-            Python_Vectorize["vectorize"]
-            Faiss_Index["faiss_index"]
         end
 
         subgraph PythonVenv ["Python 가상환경"]
-            
             subgraph "로드된 AI 모델"
                 direction LR
                 SBERT["S-BERT 모델"]
                 GeminiAPI["Gemini API"]
             end
+        end
+    end
+    
+    subgraph "Docker 환경"
+        subgraph "벡터 저장소 컨테이너"
+            Qdrant[(Qdrant DB)]
         end
     end
     
@@ -58,14 +61,12 @@ flowchart TB
     end
     
     %% 연결 관계 정의
-    User --> React
     React <--> Controller
     Controller <--> SpringService
     SpringService <--> Repository
     Repository <--> MySQL
-    
-    %% 서비스 기능 연결
-    %% SpringService --- ServiceFunctions
+
+    AIFunctions <--> Qdrant
     
     %% Python 서비스 내부 연결
     Python_Vectorize & Similarity_Search --> SBERT
@@ -75,11 +76,15 @@ flowchart TB
     Vectorize ====> Python_Vectorize
     AutoVectorize ===> Python_Vectorize
     Search ===> Similarity_Search
-    Rag ===> RAG_Answer & RAG_Summary
     
     %% 외부 API 연결
     GuardianAPI <--> Fetch
-    Index---Similarity_Search
+    Index <--> Similarity_Search
+    Index <--> Faiss_Index
+
+    Rag ===> RAG_Answer & RAG_Summary
+
+    
     
     %% 스타일 정의
     classDef user fill:#F8F8F8,stroke:#999,stroke-width:2px,color:#333;
@@ -92,6 +97,7 @@ flowchart TB
     classDef aimodels fill:#FF6B6B,stroke:#333,stroke-width:1px,color:white;
     classDef database fill:#00758F,stroke:#333,stroke-width:1px,color:white;
     classDef external fill:#FFC300,stroke:#333,stroke-width:1px,color:black;
+    classDef docker fill:#0DB7ED,stroke:#0DB7ED,stroke-width:2px,color:white;
     
     %% 스타일 적용
     class User user;
@@ -99,8 +105,9 @@ flowchart TB
     class Controller,SpringService,Repository backend;
     class AutoVectorize,Fetch,FetchLog,Rag,Search,Vectorize service;
     class PythonVenv pythonvenv;
-
     class RAG_Answer,RAG_Summary,Similarity_Search,Python_Vectorize,Faiss_Index pythonfunctions;
     class GeminiAPI,SBERT aimodels;
     class MySQL database;
-    class GuardianAPI external; 
+    class Qdrant database;
+    class Docker docker;
+    class GuardianAPI external;
