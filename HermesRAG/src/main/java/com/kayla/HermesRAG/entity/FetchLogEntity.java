@@ -20,6 +20,9 @@ public class FetchLogEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String query;
+
     @Column(name = "last_fetched_date")
     private LocalDate lastFetchedDate;
 
