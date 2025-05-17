@@ -81,7 +81,7 @@ const Home = () => {
   return (
     <HomeWrapper>
       <LogoContainer>
-        <Logo src="/logo192.png" alt="HermesRAG Logo" />
+        <Logo src="/HermesRAG_logo.png" alt="HermesRAG Logo" />
         <TitleText>HermesRAG</TitleText>
       </LogoContainer>
       <InfoText>AI 기반 뉴스 요약 및 검색 서비스</InfoText>

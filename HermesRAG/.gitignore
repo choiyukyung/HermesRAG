@@ -38,6 +38,7 @@ out/
 
 ### Python ###
 src/python/venv/
+__pycache__/
 
 ### Qdrant ###
 src/python/qdrant_data/
