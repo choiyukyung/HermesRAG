@@ -20,6 +20,10 @@ public class LoggingAspect {
     @Before("execution(* com.kayla.HermesRAG.controller..*(..))")
     public void logBeforeController(JoinPoint joinPoint) {
         logger.info("Start Controller: {}", joinPoint.getSignature().toShortString());
+
+        // 파라미터 로그 추가
+        Object[] args = joinPoint.getArgs();
+        logger.info("Params: {}", java.util.Arrays.toString(args));
     }
 
     // Service 실행 시간 측정
@@ -32,6 +36,9 @@ public class LoggingAspect {
         long executionTime = System.currentTimeMillis() - start;
         logger.info("{} execution time: {} ms", joinPoint.getSignature(), executionTime);
 
+        // 리턴 값 추가
+        logger.info("{} return: {}", joinPoint.getSignature(), proceed);
+
         return proceed;
     }
 
@@ -39,6 +46,9 @@ public class LoggingAspect {
     @AfterThrowing(pointcut = "execution(* com.kayla.HermesRAG..*(..))", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
         logger.error("error: {} - {}", joinPoint.getSignature(), ex.getMessage());
+
+        // 파라미터 로그 추가
+        logger.error("Params at error: {}", java.util.Arrays.toString(joinPoint.getArgs()));
     }
 }
 
