@@ -22,19 +22,18 @@ public class LoggingAspect {
         logger.info("Start Controller: {}", joinPoint.getSignature().toShortString());
 
         // 파라미터 로그 추가
-        Object[] args = joinPoint.getArgs();
-        logger.info("Params: {}", java.util.Arrays.toString(args));
+        logger.info("Params: {}", java.util.Arrays.toString(joinPoint.getArgs()));
     }
 
     // Service 실행 시간 측정
     @Around("execution(* com.kayla.HermesRAG.service..*(..))")
     public Object logExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         long start = System.currentTimeMillis();
-
         Object proceed = joinPoint.proceed();
-
         long executionTime = System.currentTimeMillis() - start;
-        logger.info("{} execution time: {} ms", joinPoint.getSignature(), executionTime);
+
+        // .toShortString() 이용해서 풀패키지명 대신 컨트롤러.메서드
+        logger.info("{} execution time: {} ms", joinPoint.getSignature().toShortString(), executionTime);
 
         // 리턴 값 추가
         logger.info("{} return: {}", joinPoint.getSignature(), proceed);
@@ -45,7 +44,7 @@ public class LoggingAspect {
     // 예외
     @AfterThrowing(pointcut = "execution(* com.kayla.HermesRAG..*(..))", throwing = "ex")
     public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
-        logger.error("error: {} - {}", joinPoint.getSignature(), ex.getMessage());
+        logger.error("error: {} - {}", joinPoint.getSignature().toShortString(), ex.getMessage());
 
         // 파라미터 로그 추가
         logger.error("Params at error: {}", java.util.Arrays.toString(joinPoint.getArgs()));
