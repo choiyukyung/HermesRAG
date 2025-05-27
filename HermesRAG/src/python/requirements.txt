@@ -8,3 +8,6 @@ google-generativeai
 faiss-cpu
 
 qdrant-client
+
+fastapi
+uvicorn

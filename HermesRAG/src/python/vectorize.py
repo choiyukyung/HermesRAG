@@ -95,9 +95,9 @@ class ArticleVectorizer:
             "processed_count": processed_count
         }
 
-
-if __name__ == "__main__":
-    vectorizer = ArticleVectorizer()
-    result = vectorizer.process_article(API_URL_VECTORIZE)
-
-    print(json.dumps(result))
+# 스크립트를 직접 실행할 때만 작동하는 코드 -> FastAPI 엔드포인트에서 직접 실행
+# if __name__ == "__main__":
+#     vectorizer = ArticleVectorizer()
+#     result = vectorizer.process_article(API_URL_VECTORIZE)
+#
+#     print(json.dumps(result))
