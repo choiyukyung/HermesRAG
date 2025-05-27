@@ -8,6 +8,7 @@ import com.kayla.HermesRAG.utils.PythonExecutor;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,13 +40,17 @@ public class VectorizeService {
     @Transactional
     public VecResponseDTO vectorize() {
         try {
-            String jsonOutput = pythonExecutor.runPythonScript("src\\python\\vectorize.py");
+            // FastAPI 서버에 HTTP 요청
+            RestTemplate restTemplate = new RestTemplate();
+            String url = "http://localhost:8000/run-vectorize";
+
+            String jsonOutput = restTemplate.getForObject(url, String.class);
 
             // JSON 파싱 후 DTO 변환
             return objectMapper.readValue(jsonOutput, VecResponseDTO.class);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("Internal Server Error", e);
+            throw new RuntimeException("FastAPI 호출 실패", e);
         }
     }
 
