@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kayla.HermesRAG.dto.VecRequestDTO;
 import com.kayla.HermesRAG.dto.VecResponseDTO;
 import com.kayla.HermesRAG.repository.ArticleRepository;
-import com.kayla.HermesRAG.utils.PythonExecutor;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,6 @@ public class VectorizeService {
     private final FetchService fetchService;
     private final ArticleRepository articleRepository;
 
-    private final PythonExecutor pythonExecutor;
     private final ObjectMapper objectMapper;
 
     public int fetchAndVectorize(LocalDate from_date, LocalDate to_date) {

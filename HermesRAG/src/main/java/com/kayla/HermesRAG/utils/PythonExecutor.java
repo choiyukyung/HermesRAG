@@ -7,6 +7,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+// 2025-05-28
+// 이 PythonExecutor 기반 실행 로직은 필요 X
+// FastAPI 엔드포인트를 통해 Python 스크립트를 실행함
 @Component
 public class PythonExecutor {
     private final ProjectRootFinder projectRootFinder;

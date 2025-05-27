@@ -73,23 +73,23 @@ class Rag:
         }
 
 
-if __name__ == "__main__":
-
-    #API_KEY 환경 변수로 저장
-    API_KEY = os.getenv('GOOGLE_API_KEY')
-
-    if not API_KEY:
-        print("Error: GOOGLE_API_KEY environment variable not set.")
-        sys.exit(1)
-
-    if len(sys.argv) < 2:
-        print("사용법: python search_articles.py <검색어>")
-    else:
-        client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
-        searcher = SimilaritySearcher(client)
-        rag = Rag(API_KEY)
-
-        query = sys.argv[1]
-        similar_articles = searcher.find_similar_articles(query, top_n=5)
-        result = rag.answer_based_on_articles(similar_articles, query)
-        print(json.dumps(result))
+# if __name__ == "__main__":
+#
+#     #API_KEY 환경 변수로 저장
+#     API_KEY = os.getenv('GOOGLE_API_KEY')
+#
+#     if not API_KEY:
+#         print("Error: GOOGLE_API_KEY environment variable not set.")
+#         sys.exit(1)
+#
+#     if len(sys.argv) < 2:
+#         print("사용법: python search_articles.py <검색어>")
+#     else:
+#         client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
+#         searcher = SimilaritySearcher(client)
+#         rag = Rag(API_KEY)
+#
+#         query = sys.argv[1]
+#         similar_articles = searcher.find_similar_articles(query, top_n=5)
+#         result = rag.answer_based_on_articles(similar_articles, query)
+#         print(json.dumps(result))
