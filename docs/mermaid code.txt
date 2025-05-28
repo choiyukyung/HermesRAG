@@ -28,6 +28,10 @@ flowchart TB
     
     subgraph "Python 서비스"
         direction TB
+
+        FastAPI["FastAPI
+        (API 진입점)"]
+
         subgraph AIFunctions ["AI 기능"]
             direction LR
             Python_Vectorize["vectorize"]
@@ -67,25 +71,26 @@ flowchart TB
     Repository <--> MySQL
 
     AIFunctions <--> Qdrant
-    
+
     %% Python 서비스 내부 연결
+    FastAPI --> Python_Vectorize
+    FastAPI --> Similarity_Search
+    FastAPI --> RAG_Answer
+    FastAPI --> RAG_Summary
     Python_Vectorize & Similarity_Search --> SBERT
     RAG_Answer & RAG_Summary --> GeminiAPI
     
-    %% Spring Boot <-> Python 서비스 연결
-    Vectorize ====> Python_Vectorize
-    AutoVectorize ===> Python_Vectorize
-    Search ===> Similarity_Search
-    
+    %% Spring Boot → FastAPI
+    Vectorize ====> FastAPI
+    AutoVectorize ===> FastAPI
+    Search ===> FastAPI
+    Rag ===> FastAPI
+
     %% 외부 API 연결
     GuardianAPI <--> Fetch
     Index <--> Similarity_Search
     Index <--> Faiss_Index
 
-    Rag ===> RAG_Answer & RAG_Summary
-
-    
-    
     %% 스타일 정의
     classDef user fill:#F8F8F8,stroke:#999,stroke-width:2px,color:#333;
     classDef frontend fill:#61DAFB,stroke:#333,stroke-width:1px,color:black;
@@ -98,16 +103,19 @@ flowchart TB
     classDef database fill:#00758F,stroke:#333,stroke-width:1px,color:white;
     classDef external fill:#FFC300,stroke:#333,stroke-width:1px,color:black;
     classDef docker fill:#0DB7ED,stroke:#0DB7ED,stroke-width:2px,color:white;
-    
+    classDef inactive fill:#F2F2F2,stroke:#CCCCCC,stroke-width:1px,color:#AAAAAA;
+
+
     %% 스타일 적용
-    class User user;
     class React frontend;
     class Controller,SpringService,Repository backend;
     class AutoVectorize,Fetch,FetchLog,Rag,Search,Vectorize service;
+    class FastAPI pythonservice;
     class PythonVenv pythonvenv;
-    class RAG_Answer,RAG_Summary,Similarity_Search,Python_Vectorize,Faiss_Index pythonfunctions;
+    class RAG_Answer,RAG_Summary,Similarity_Search,Python_Vectorize pythonfunctions;
     class GeminiAPI,SBERT aimodels;
     class MySQL database;
     class Qdrant database;
     class Docker docker;
     class GuardianAPI external;
+    class Faiss_Index,Index inactive;
