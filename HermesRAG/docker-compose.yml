@@ -1,4 +1,4 @@
-version: '3.9'
+#version: '3.9'
 
 services:
   qdrant:
@@ -10,6 +10,16 @@ services:
       - qdrant_data:/qdrant/storage  # volume: qdrant_data - 컨테이너 내 경로: /qdrant/storage 매핑
     environment:
       - QDRANT__STORAGE__PATH=/qdrant/storage
+
+  fastapi:
+    container_name: Fastapi-container
+    build:
+      context: ./src/python
+    ports:
+      - "8000:8000"
+    depends_on:
+      - qdrant
+
 
 volumes:
   qdrant_data:
