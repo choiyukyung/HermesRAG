@@ -2,6 +2,9 @@ FROM python:3.11
 
 WORKDIR /app
 
+# torch CPU용 (사전 설치)
+RUN pip install --no-cache-dir torch==2.3.1+cpu -f https://download.pytorch.org/whl/torch_stable.html
+
 COPY requirements.txt .
 
 #이 단계는 requirements.txt가 바뀌지 않으면 캐시됨!

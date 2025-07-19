@@ -1,4 +1,6 @@
+torch==2.3.1+cpu # GPU 없는 환경에서 불필요한 대형 패키지를 방지 -> 빌드 속도 증가(수십배 빨라짐)
 sentence-transformers
+
 numpy
 mysql-connector-python
 requests
