@@ -1,6 +1,37 @@
 #version: '3.9'
 
 services:
+  mysqldb:
+    image: mysql:8.0.35
+    container_name: Mysql-container
+    environment:
+      MYSQL_ROOT_PASSWORD: 0506
+      MYSQL_DATABASE: hermesrag
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 1256
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    depends_on:
+      - qdrant
+
+  springboot:
+    build:
+      context: .
+      dockerfile: Dockerfile   # 스프링부트 Dockerfile 위치
+    container_name: springboot-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker        # application-docker.properties 사용
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/hermesrag
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: 1256
+    depends_on:
+      - mysqldb
+    command: ["./wait-for-it.sh", "mysqldb:3306", "--", "java", "-jar", "app.jar"]
+
   qdrant:
     image: qdrant/qdrant:latest
     container_name: Qdrant-container
@@ -24,5 +55,6 @@ services:
 
 
 volumes:
+  mysql_data:
   qdrant_data:
     driver: local
