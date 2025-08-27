@@ -40,7 +40,7 @@ public class VectorizeService {
         try {
             // FastAPI 서버에 HTTP 요청
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8000/run-vectorize";
+            String url = "http://fastapi:8000/run-vectorize";
 
             String jsonOutput = restTemplate.getForObject(url, String.class);
 

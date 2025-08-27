@@ -15,7 +15,7 @@ public class RagService {
     public RagResponseDTO summarize(String query) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8000/run-rag-summary";
+            String url = "http://fastapi:8000/run-rag-summary";
 
             String jsonOutput = restTemplate.getForObject(url, String.class);
 
@@ -30,7 +30,7 @@ public class RagService {
     public RagResponseDTO answer(String query) {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            String url = "http://localhost:8000/run-rag-answer";
+            String url = "http://fastapi:8000/run-rag-answer";
 
             String jsonOutput = restTemplate.getForObject(url, String.class);
 
