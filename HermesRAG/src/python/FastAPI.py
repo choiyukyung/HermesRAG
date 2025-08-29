@@ -1,13 +1,13 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Form
+from qdrant_client import QdrantClient
 
 from vectorize import ArticleVectorizer
 from similarity_search import SimilaritySearcher
-from rag_answer import Rag
-from rag_summary import Rag
+from rag_answer import Rag as RagAnswer
+from rag_summary import Rag as RagSummary
 
-from qdrant_client import QdrantClient
 from config import API_URL_VECTORIZE, QDRANT_SERVER_HOST, QDRANT_SERVER_PORT
-import os, json, sys
+import os, json
 
 app = FastAPI()
 
@@ -18,48 +18,41 @@ def run_vectorize():
 
     return result
 
+@app.post("/run-rag-summary")
+def run_rag_summary(query: str = Form(...)):
 
-@app.get("/run-rag-answer")
-def run_rag_answer():
-
-    #API_KEY 환경 변수로 저장
     API_KEY = os.getenv('GOOGLE_API_KEY')
-
     if not API_KEY:
         return "Error: GOOGLE_API_KEY environment variable not set."
 
-    if len(sys.argv) < 2:
-        return "사용법: python search_articles.py <검색어>"
-    else:
+    client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
+    searcher = SimilaritySearcher(client)
+    rag = RagSummary(API_KEY)
+
+    similar_articles = searcher.find_similar_articles(query, top_n=5)
+    articlesTop3 = rag.select_top_3_articles(similar_articles, query)
+    result = rag.summarize_articles(articlesTop3)
+
+    return result
+
+@app.post("/run-rag-answer")
+def run_rag_answer(query: str = Form(...)):
+
+    API_KEY = os.getenv('GOOGLE_API_KEY')
+    if not API_KEY:
+        return "Error: GOOGLE_API_KEY environment variable not set."
+
+    try:
         client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
         searcher = SimilaritySearcher(client)
-        rag = Rag(API_KEY)
+        rag = RagAnswer(API_KEY)
 
-        query = sys.argv[1]
         similar_articles = searcher.find_similar_articles(query, top_n=5)
         result = rag.answer_based_on_articles(similar_articles, query)
 
         return result
 
-
-@app.get("/run-rag-summary")
-def run_rag_summary():
-    #API_KEY 환경 변수로 저장
-    API_KEY = os.getenv('GOOGLE_API_KEY')
-
-    if not API_KEY:
-        return "Error: GOOGLE_API_KEY environment variable not set."
-
-    if len(sys.argv) < 2:
-        return "사용법: python search_articles.py <검색어>"
-    else:
-        client = QdrantClient(host=QDRANT_SERVER_HOST, port=QDRANT_SERVER_PORT)
-        searcher = SimilaritySearcher(client)
-        rag = Rag(API_KEY)
-
-        query = sys.argv[1]
-        similar_articles = searcher.find_similar_articles(query, top_n=5)
-        articlesTop3 = rag.select_top_3_articles(similar_articles, query)
-        result = rag.summarize_articles(articlesTop3)
-
-        return result
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return {"error": str(e)}

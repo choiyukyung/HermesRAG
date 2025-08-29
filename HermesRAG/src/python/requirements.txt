@@ -4,11 +4,11 @@ sentence-transformers
 numpy
 mysql-connector-python
 requests
+python-multipart
 
 google-generativeai
 
-faiss-cpu
-
+#faiss-cpu
 qdrant-client
 
 fastapi
