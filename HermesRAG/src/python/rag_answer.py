@@ -1,10 +1,8 @@
 import google.generativeai as genai
 import os, json, sys
-from similarity_search import SimilaritySearcher
 from typing import List, Tuple, Dict, Any
 import requests
-from config import GUARDIAN_API_URL, GUARDIAN_API_KEY, QDRANT_SERVER_HOST, QDRANT_SERVER_PORT
-from qdrant_client import QdrantClient
+from config import GUARDIAN_API_URL, GUARDIAN_API_KEY
 
 
 class Rag:
@@ -40,6 +38,7 @@ class Rag:
         except Exception as e:
             print(f"Error while answering: {e}")
             return ""
+
 
     def get_article_content(self, article_id):
         # 기사 본문 가져오기

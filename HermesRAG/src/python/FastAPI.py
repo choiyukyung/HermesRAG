@@ -30,8 +30,7 @@ def run_rag_summary(query: str = Form(...)):
     rag = RagSummary(API_KEY)
 
     similar_articles = searcher.find_similar_articles(query, top_n=5)
-    articlesTop3 = rag.select_top_3_articles(similar_articles, query)
-    result = rag.summarize_articles(articlesTop3)
+    result = rag.summarize_articles(similar_articles)
 
     return result
 

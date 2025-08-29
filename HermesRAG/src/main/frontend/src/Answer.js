@@ -4,8 +4,9 @@ import styled from 'styled-components';
 const AnswerWrapper = styled.div`
   padding: 20px;
   text-align: center;
-  height: 100vh;
+  min-height: 100vh;
   background-color: #fff8f1;
+  overflow-y: auto;
 `;
 
 const SearchInput = styled.input`
@@ -118,7 +119,7 @@ const Answer = () => {
           {responseData.message && (
             <AnswerMessage>{responseData.message}</AnswerMessage>
           )}
-          <h3>관련 뉴스 기사:</h3>
+          <h3>참고된 뉴스 기사:</h3>
           {responseData.articles && responseData.articles.length > 0 ? (
             <ArticleList>
               {responseData.articles.map((article, index) => (
