@@ -2,9 +2,7 @@ import requests
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from typing import List, Tuple
-from config import DB_CONFIG, API_URL_VECTORIZE  # config.py에서 설정 가져오기
-from config import QDRANT_SERVER_HOST, QDRANT_SERVER_PORT
-import json
+from config import DB_CONFIG, QDRANT_SERVER_HOST, QDRANT_SERVER_PORT  # config.py에서 설정 가져오기
 from qdrant_client import QdrantClient
 from qdrant_client.models import PointStruct
 import uuid

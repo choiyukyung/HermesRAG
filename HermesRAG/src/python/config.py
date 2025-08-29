@@ -1,3 +1,16 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # .env 파일 로드
+
+# Google API
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+
+# Guardian API
+GUARDIAN_API_KEY = os.getenv("GUARDIAN_API_KEY")
+GUARDIAN_API_URL = os.getenv("GUARDIAN_API_URL")
+
+
 DB_CONFIG = {
     'host': 'mysqldb',
     'user': 'user',
@@ -8,9 +21,6 @@ DB_CONFIG = {
 API_URL_VECTORIZE = "http://springboot:8080/api/vectorize/get"
 API_URL_SEARCH = "http://springboot:8080/api/search/get"
 API_URL_FAISS = "http://springboot:8080/api/faiss/get"
-
-GUARDIAN_API_URL="https://content.guardianapis.com"
-GUARDIAN_API_KEY="fec93f93-a9c4-4c9b-9386-f7697f23e090"
 
 QDRANT_SERVER_HOST = "qdrant"
 QDRANT_SERVER_PORT = 6333
