@@ -70,7 +70,7 @@ const Dissatisfaction = styled.em`
 `;
 
 const Answer = () => {
-  const [command, setCommand] = useState(""); // 입력된 질문
+  const [command, setCommand] = useState("");
   const [responseData, setResponseData] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -100,6 +100,15 @@ const Answer = () => {
     }
   };
 
+  // 중복 제거 + 유사도 내림차순 정렬
+  const sortedArticles = responseData?.articles
+    ? Array.from(
+        new Map(
+          responseData.articles.map(article => [article.web_url, article])
+        ).values()
+      ).sort((a, b) => parseFloat(b.similarity) - parseFloat(a.similarity))
+    : [];
+
   return (
     <AnswerWrapper>
       <h2>최신 기술과학 뉴스 질문</h2>
@@ -120,14 +129,14 @@ const Answer = () => {
             <AnswerMessage>{responseData.message}</AnswerMessage>
           )}
           <h3>참고된 뉴스 기사:</h3>
-          {responseData.articles && responseData.articles.length > 0 ? (
+          {sortedArticles.length > 0 ? (
             <ArticleList>
-              {responseData.articles.map((article, index) => (
+              {sortedArticles.map((article, index) => (
                 <ArticleItem key={index}>
                   <ArticleLink href={article.web_url} target="_blank">
                     {article.web_title}
                   </ArticleLink> <br />
-                  <Similarity>유사도: {article.similarity.toFixed(4)}</Similarity>
+                  <Similarity>유사도: {parseFloat(article.similarity).toFixed(4)}</Similarity>
                 </ArticleItem>
               ))}
             </ArticleList>
@@ -137,7 +146,6 @@ const Answer = () => {
           <Dissatisfaction><div>만족스러운 결과를 얻지 못하셨다면, 조금 더 자세히 검색해보세요.</div></Dissatisfaction>
         </ResultContainer>
       )}
-
     </AnswerWrapper>
   );
 };

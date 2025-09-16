@@ -68,7 +68,6 @@ const Dissatisfaction = styled.em`
   font-size: 12px;
 `;
 
-
 const Summary = () => {
   const [command, setCommand] = useState(""); // 입력된 명령어
   const [responseData, setResponseData] = useState(null); // API 응답 저장
@@ -100,6 +99,15 @@ const Summary = () => {
     }
   };
 
+  // 중복 제거 + 유사도 내림차순 정렬
+  const sortedArticles = responseData?.articles
+    ? Array.from(
+        new Map(
+          responseData.articles.map(article => [article.web_url, article])
+        ).values()
+      ).sort((a, b) => parseFloat(b.similarity) - parseFloat(a.similarity))
+    : [];
+
   return (
     <SummaryWrapper>
       <h2>최신 기술과학 뉴스 요약</h2>
@@ -116,15 +124,15 @@ const Summary = () => {
       {responseData && (
         <ResultContainer>
           <h3>요약된 뉴스 기사:</h3>
-          {responseData.articles && responseData.articles.length > 0 ? (
+          {sortedArticles.length > 0 ? (
             <ArticleList>
-              {responseData.articles.map((article, index) => (
+              {sortedArticles.map((article, index) => (
                 <ArticleItem key={index}>
                   <ArticleLink href={article.web_url} target="_blank">
                     {article.web_title}
                   </ArticleLink> <br />
                   요약: <ArticleSummary>{article.korean_summary}</ArticleSummary> <br />
-                  <Similarity>유사도: {article.similarity.toFixed(4)}</Similarity>
+                  <Similarity>유사도: {parseFloat(article.similarity).toFixed(4)}</Similarity>
                 </ArticleItem>
               ))}
             </ArticleList>
