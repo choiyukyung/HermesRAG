@@ -1,121 +1,99 @@
+%%{init: {'themeVariables': {'fontSize': '20px'}}}%%
+
+
 flowchart TB
     %% 주요 컴포넌트 정의
     
-    subgraph "프론트엔드"
-        React["React
-        사용자 UI"]
+    subgraph frontend ["프론트엔드"]
+        React["사용자 UI"]
     end
-    
-    subgraph "Spring Boot 백엔드"
-        direction TB
-        Controller["Controller"]
-        SpringService["Service Layer"]
-        Repository["Repository Layer"]
-        subgraph Memory ["애플리케이션 메모리"]
-            Index["FAISS index"]
-        end
+
+    subgraph DockerNet ["Docker Network"]
+        direction LR
         
-        subgraph ServiceFunctions ["Service 주요기능"]
-            direction LR
-            Fetch["fetch"] <--> FetchLog["fetchLog"]
-            Rag["rag"]
-            Search["search"]
-            Vectorize["vectorize"]
-            AutoVectorize["AutoVectorize
-            (@Scheduled)"]
-        end
-    end
-    
-    subgraph "Python 서비스"
-        direction TB
+        subgraph FastAPIContainer ["FastAPI Container"]
+            direction TB
 
-        FastAPI["FastAPI
-        (API 진입점)"]
+            subgraph AIFunctions ["AI 기능"]
+                direction LR
+                Python_Vectorize["vectorize"]
+                Similarity_Search["similarity_search"]
+                RAG_Answer["rag_answer"]
+                RAG_Summary["rag_summary"]
+            end
 
-        subgraph AIFunctions ["AI 기능"]
-            direction LR
-            Python_Vectorize["vectorize"]
-            Similarity_Search["similarity_search"]
-            Faiss_Index["faiss_index"]
-            RAG_Answer["rag_answer"]
-            RAG_Summary["rag_summary"]
-        end
-
-        subgraph PythonVenv ["Python 가상환경"]
             subgraph "로드된 AI 모델"
                 direction LR
                 SBERT["S-BERT 모델"]
                 GeminiAPI["Gemini API"]
             end
         end
-    end
+
     
-    subgraph "Docker 환경"
-        subgraph "벡터 저장소 컨테이너"
+        subgraph SpringContainer ["Spring Boot Container"]
+            direction TB
+            Controller["Controller"]
+            SpringService["Service"]
+            Repository["Repository"]
+        end
+
+        subgraph MySQLContainer["MySQL Container"]
+            MySQL[(MySQL DB)]
+        end
+
+        subgraph QdrantContainer["벡터 DB Container"]
             Qdrant[(Qdrant DB)]
         end
     end
-    
+
     subgraph "외부 API"
-        GuardianAPI["Guardian API"]
-    end
-
-    subgraph "데이터 저장소"
-        MySQL[(MySQL DB)]
+        GuardianAPI["GuardianAPI"]
     end
     
+
     %% 연결 관계 정의
-    React <--> Controller
-    Controller <--> SpringService
-    SpringService <--> Repository
-    Repository <--> MySQL
+    React <-->|HTTP/REST| SpringContainer
 
-    AIFunctions <--> Qdrant
-
-    %% Python 서비스 내부 연결
-    FastAPI --> Python_Vectorize
-    FastAPI --> Similarity_Search
-    FastAPI --> RAG_Answer
-    FastAPI --> RAG_Summary
-    Python_Vectorize & Similarity_Search --> SBERT
-    RAG_Answer & RAG_Summary --> GeminiAPI
-    
-    %% Spring Boot → FastAPI
-    Vectorize ====> FastAPI
-    AutoVectorize ===> FastAPI
-    Search ===> FastAPI
-    Rag ===> FastAPI
 
     %% 외부 API 연결
-    GuardianAPI <--> Fetch
-    Index <--> Similarity_Search
-    Index <--> Faiss_Index
+    GuardianAPI <-->|HTTP/REST| SpringContainer
+
+    SpringContainer <-->|JDBC/MySQL TCP| MySQLContainer
+
+    %% Spring Boot
+    Controller <--> SpringService
+    SpringService <--> Repository
+
+    %% Spring Boot - FastAPI
+    SpringContainer <--> |HTTP/REST| FastAPIContainer
+
+    %% Python 서비스 내부 연결
+    Python_Vectorize & Similarity_Search --> SBERT
+    RAG_Answer & RAG_Summary --> GeminiAPI
+
+    FastAPIContainer <--> |HTTP/REST| QdrantContainer
 
     %% 스타일 정의
     classDef user fill:#F8F8F8,stroke:#999,stroke-width:2px,color:#333;
     classDef frontend fill:#61DAFB,stroke:#333,stroke-width:1px,color:black;
     classDef backend fill:#6DB33F,stroke:#333,stroke-width:1px,color:white;
     classDef service fill:#85C1E9,stroke:#333,stroke-width:1px,color:black;
-    classDef pythonenv fill:#E6F7FF,stroke:#306998,stroke-width:2px,stroke-dasharray:5,5,color:#306998;
-    classDef pythonservice fill:#306998,stroke:#333,stroke-width:1px,color:white;
+    classDef pythonvenv fill:#E6F7FF,stroke:#306998,stroke-width:2px,stroke-dasharray:5,5,color:#306998;
     classDef pythonfunctions fill:#4B8BBE,stroke:#333,stroke-width:1px,color:white;
     classDef aimodels fill:#FF6B6B,stroke:#333,stroke-width:1px,color:white;
     classDef database fill:#00758F,stroke:#333,stroke-width:1px,color:white;
     classDef external fill:#FFC300,stroke:#333,stroke-width:1px,color:black;
-    classDef docker fill:#0DB7ED,stroke:#0DB7ED,stroke-width:2px,color:white;
-    classDef inactive fill:#F2F2F2,stroke:#CCCCCC,stroke-width:1px,color:#AAAAAA;
+    classDef docker fill:#E6F7FF,stroke:#4169E1,stroke-width:1px;
 
 
     %% 스타일 적용
     class React frontend;
     class Controller,SpringService,Repository backend;
-    class AutoVectorize,Fetch,FetchLog,Rag,Search,Vectorize service;
-    class FastAPI pythonservice;
+    class AutoVectorize,Fetch,Fetchlog,Rag,Search,Vectorize service;
     class PythonVenv pythonvenv;
     class RAG_Answer,RAG_Summary,Similarity_Search,Python_Vectorize pythonfunctions;
     class GeminiAPI,SBERT aimodels;
     class MySQL database;
     class Qdrant database;
-    class Docker docker;
+    class DockerNet docker;
     class GuardianAPI external;
-    class Faiss_Index,Index inactive;
