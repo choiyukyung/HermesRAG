@@ -42,8 +42,9 @@ HermesRAG 프로젝트는 **최신 뉴스**를 바탕으로 기술과학(+비지
 5. 필요한 모델
    - 위 과정에서 필요한 모델은 파이썬을 사용하여 로드됩니다. 벡터화+유사도 검색 모델과, 응답 생성 모델은 비용과 정확도를 고려하여 결정했습니다.
   
-## Simple Spring Boot - AI Diagram
+## Simple Docker Container Diagram
 <div align="center">
-   <img src="https://github.com/user-attachments/assets/5108f724-70be-43ab-8d2f-4a6626958235" width="70%" />
+   <img width="60%" alt="image" src="https://github.com/user-attachments/assets/fec464f5-9924-4a3e-a323-a36ae90063e7" />
+
 </div>
 
